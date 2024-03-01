@@ -28,7 +28,6 @@ npm run test
 ## Author
 <% if (authorName) { %>
 👤 **<%= authorName %>**
-<% } %>
 <% if (authorWebsite) { -%>
 * Website: <%= authorWebsite %>
 <% } -%>

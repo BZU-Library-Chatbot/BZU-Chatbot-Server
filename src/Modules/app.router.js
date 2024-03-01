@@ -1,9 +1,7 @@
-
 import connectDB from '../../DB/connection.js';
 import { globalErrorHandel } from '../Services/errorHandling.js';
 import AuthRouter from './Auth/Auth.router.js';
 import UserRouter from './User/User.router.js';
-//import CategoryRouter from "./Category/Category.router.js";
 import path from 'path'; 
 import {fileURLToPath} from 'url';
 import cors from 'cors';
@@ -17,9 +15,8 @@ const initApp=(app,express)=>{
     app.use('/upload',express.static(fullPath));
     app.use("/auth", AuthRouter);
     app.use('/user', UserRouter);
-    //app.use('/category',CategoryRouter);
     app.use('/*', (req,res)=>{
-        return res.status(404).json({messaga:"page not found"});
+        return res.status(404).json({message:"page not found"});
     })
 
     //global error handler
