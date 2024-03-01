@@ -1,11 +1,8 @@
-
 import joi from 'joi'
 import { Types } from 'mongoose';
 import userModel from '../../DB/model/User.model.js';
 import { roles } from './auth.middleware.js';
 import { verifyToken } from '../Services/generateAndVerifyToken.js';
-
-// const dataMethods = ['body','query','params','headers','file'];
 
 export const validationObjectId =(value,helper)=>{
 

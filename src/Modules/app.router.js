@@ -1,5 +1,5 @@
 import connectDB from '../../DB/connection.js';
-import { globalErrorHandel } from '../Services/errorHandling.js';
+import { globalErrorHandle } from '../Services/errorHandling.js';
 import AuthRouter from './Auth/Auth.router.js';
 import UserRouter from './User/User.router.js';
 import path from 'path'; 
@@ -20,7 +20,7 @@ const initApp=(app,express)=>{
     })
 
     //global error handler
-    app.use(globalErrorHandel)
+    app.use(globalErrorHandle)
 
 }
 
