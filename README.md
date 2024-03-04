@@ -31,13 +31,10 @@ npm run test
 👤 **Raghad Aqel**
 
 
-* Facebook: Tariq Quraan([https://twitter.com/<%= authorTwitterUsername %>](https://www.facebook.com/profile.php?id=100016606080937))
 * GitHub: Aziza Karakra(https://github.com/azizakarakra)
 * LinkedIn: Aziza Karakra(https://www.linkedin.com/in/aziza-karakra-8a8231253/)
-* Instagram: Raghad Aqel(https://www.instagram.com/raghad.aqel/)
+* GitHub: Tariq Quraan(https://github.com/RoOtT24)
+* LinkedIn: Tariq Quraan(https://www.linkedin.com/in/tariq-quraan-42a079248/)
+* GitHub: Raghad Aqel(https://github.com/Raghad-Aqel)
+* LinkedIn: Raghad Aqel(https://www.linkedin.com/in/raghad-aqel-6ba112260/)
 
-## 🤝 Contributing
-
-Contributions, issues and feature requests are welcome!
-
-We welcome contributions from the community to enhance the chatbot's functionalities and integration capabilities. If you're interested in contributing, please refer to our contribution guidelines.
