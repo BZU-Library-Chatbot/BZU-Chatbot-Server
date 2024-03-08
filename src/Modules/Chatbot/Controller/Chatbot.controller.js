@@ -22,7 +22,7 @@ export const sendMessage = (req, res, next) => {
     const { message } = req.body; // this mssg to be sent to chatbot
     let data1;
 
-    const python = spawn('python', ['./script1.py', message]);
+    const python = spawn('python3', ['./script1.py', message]);
 
     python.stdout.on('data', (data) => {
         console.log('Data from Python script:', data.toString());
