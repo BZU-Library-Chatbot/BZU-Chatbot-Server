@@ -1,5 +1,5 @@
 # Welcome to BZU library chabot BE code 👋
-The Library Management System Chatbot is an innovative solution designed to enhance the user experience and streamline library operations. This chatbot leverages advanced natural language processing (NLP) technologies to provide real-time assistance to library users and staff. By integrating seamlessly with the library's existing management system, it offers a conversational interface that makes navigating the library's services efficient.
+The Library Management System Chatbot is an new solution designed to enhance the user experience and streamline library operations. This chatbot leverages advanced natural language processing (NLP) technologies to provide real-time assistance to library users and staff. By integrating smoothly with the library's existing management system, it offers a conversational interface that makes navigating the library's services efficient.
 
 ## Prerequisites
 

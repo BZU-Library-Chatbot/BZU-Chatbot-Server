@@ -5,7 +5,6 @@ import { asyncHandler } from "../../Services/errorHandling.js";
 
 
 const router = Router();
-
-router.get("/sendMessage", chatbotController.sendMessage);
+router.post("/sendMessage", chatbotController.sendMessage);
 
 export default router;

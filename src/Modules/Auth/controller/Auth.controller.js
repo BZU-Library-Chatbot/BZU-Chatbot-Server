@@ -640,5 +640,5 @@ export const forgetPassword = async (req, res, next) => {
   user.password = password;
   user.changePasswordTime = Date.now();
   user.save();
-  return res.status(200).json({message:'success', user});
+  return res.status(200).json({message:'Password updated successfully', user});
 }

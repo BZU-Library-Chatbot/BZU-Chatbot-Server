@@ -1,17 +1,40 @@
 import { spawn } from 'child_process';
 
-export const sendMessage = (req,res,next)=>{
+// export const sendMessage = (req,res,next)=>{
+//     let data1;
+//     let {message} = req.body;
+
+//     const python = spawn('python', ['./script1.py', message]);
+//     python.stdout.on('data', (data)=>{
+//         console.log('here data',data.toString());
+//         data1 = data.toString();
+//     });
+//     python.on('close', (code)=>{
+//         console.log('code',code);
+//         console.log(data1);
+//         return res.json('this data1',data1);
+//     });
+
+// }
+
+
+export const sendMessage = (req, res, next) => {
+    const { message } = req.body; // this mssg to be sent to chatbot
     let data1;
-    const python = spawn('python', ['./script1.py']);
-    python.stdout.on('data', (data)=>{
-        console.log('here data',data.toString());
+
+    const python = spawn('python', ['./script1.py', message]);
+
+    python.stdout.on('data', (data) => {
+        console.log('Data from Python script:', data.toString());
         data1 = data.toString();
     });
-    python.on('close', (code)=>{
-        console.log('code',code);
-        console.log(data1);
-        return res.send(data1);
-    });
-   
 
-}
+    python.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    python.on('close', (code) => {
+        console.log(`Python script exited with code ${code}`);
+        res.json({message: data1});
+    });
+};
