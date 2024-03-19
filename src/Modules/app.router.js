@@ -2,6 +2,7 @@ import connectDB from '../../DB/connection.js';
 import { globalErrorHandle } from '../Services/errorHandling.js';
 import AuthRouter from './Auth/Auth.router.js';
 import UserRouter from './User/User.router.js';
+import SessionRouter from './Session/Session.router.js';
 import ChatbotRouter from './Chatbot/Chatbot.router.js';
 import path from 'path'; 
 import {fileURLToPath} from 'url';
@@ -17,6 +18,7 @@ const initApp=(app,express)=>{
     app.use("/auth", AuthRouter);
     app.use('/user', UserRouter);
     app.use('/chatbot', ChatbotRouter);
+    app.use('/session', SessionRouter);
     app.use('/*', (req,res)=>{
         return res.status(404).json({message:"page not found"});
     })

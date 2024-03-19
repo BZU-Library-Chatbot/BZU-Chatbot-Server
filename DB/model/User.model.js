@@ -1,5 +1,5 @@
-
 import mongoose, {Schema,Types,model} from 'mongoose';
+
 const userSchema = new Schema ({
     userName:{
         type:String,
@@ -51,11 +51,9 @@ const userSchema = new Schema ({
     wishList:[{type:Types.ObjectId, ref:'Product', required:true}]
     ,
 },
-
 {
     timestamps:true
 })
+
 const userModel = mongoose.models.User ||  model('User', userSchema);
 export default userModel;
-
-
