@@ -27,10 +27,7 @@ function generateHeader(doc) {
 }
 
 function generateCustomerInformation(doc, invoice) {
-  doc
-    .fillColor("#444444")
-    .fontSize(20)
-    .text("Invoice", 50, 160);
+  doc.fillColor("#444444").fontSize(20).text("Invoice", 50, 160);
 
   generateHr(doc, 185);
 
@@ -45,22 +42,16 @@ function generateCustomerInformation(doc, invoice) {
     .text("Invoice Date:", 50, customerInformationTop + 15)
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
     .text("Balance Due:", 50, customerInformationTop + 30)
-    .text(
-      formatCurrency(invoice.total *100),
-      150,
-      customerInformationTop + 30
-    )
+    .text(formatCurrency(invoice.total * 100), 150, customerInformationTop + 30)
 
     .font("Helvetica-Bold")
     .text(invoice.shipping.name, 300, customerInformationTop)
     .font("Helvetica")
     .text(invoice.shipping.address, 300, customerInformationTop + 15)
     .text(
-    //   invoice.shipping.city +
-        // ", " +
-        invoice.shipping.address +
-        ", " +
-        invoice.shipping.country,
+      //   invoice.shipping.city +
+      // ", " +
+      invoice.shipping.address + ", " + invoice.shipping.country,
       300,
       customerInformationTop + 30
     )
@@ -168,12 +159,7 @@ function generateTableRow(
 }
 
 function generateHr(doc, y) {
-  doc
-    .strokeColor("#aaaaaa")
-    .lineWidth(1)
-    .moveTo(50, y)
-    .lineTo(550, y)
-    .stroke();
+  doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(50, y).lineTo(550, y).stroke();
 }
 
 function formatCurrency(cents) {
@@ -187,7 +173,3 @@ function formatDate(date) {
 
   return year + "/" + month + "/" + day;
 }
-
-// module.exports = {
-//   createInvoice
-// };

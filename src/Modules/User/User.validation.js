@@ -19,13 +19,15 @@ export const shareProfile = joi
   })
   .required();
 
+export const makeAdmin = joi.object({
+  id: generalFields.id.required(),
+});
 
-
-  export const makeAdmin = joi.object({
-    id: generalFields.id.required(),
-  })
-
-
-  export const coverPic = joi.object({
-    files:joi.object({0:generalFields.file,1:generalFields.file,2:generalFields.file,3:generalFields.file}),
-  });
+export const coverPic = joi.object({
+  files: joi.object({
+    0: generalFields.file,
+    1: generalFields.file,
+    2: generalFields.file,
+    3: generalFields.file,
+  }),
+});

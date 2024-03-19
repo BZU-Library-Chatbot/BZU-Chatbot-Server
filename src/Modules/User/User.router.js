@@ -14,6 +14,7 @@ router.patch(
   validation(validators.profilePic),
   asyncHandler(userController.profilePic)
 );
+
 router.patch(
   "/coverPic",
   auth(),
@@ -21,6 +22,7 @@ router.patch(
   validation(validators.coverPic),
   asyncHandler(userController.coverPic)
 );
+
 router.patch(
   "/makeAdmin/:id",
   auth(roles.Admin),
