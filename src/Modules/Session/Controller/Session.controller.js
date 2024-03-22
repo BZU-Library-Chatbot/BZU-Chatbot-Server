@@ -51,8 +51,6 @@ export const sendMessage = async (req, res, next) => {
   python.stderr.on("data", (err) => {});
 
   python.on("close", async (code) => {
-    //console.log(`Python script exited with code ${code}`);
-    console.log("here", req.body.session);
     const interaction = await interactionModel.create({
       message,
       response,
@@ -81,8 +79,6 @@ export const getAll = async (req, res, next) => {
 export const getMessages = async (req, res, next) => {
   const { page = 1, size = 10 } = req.query;
   const { id } = req.params;
-  console.log("user", req.user._id);
-  console.log("session", id);
   const messages = await interactionModel
     .find({ sessionID: id, userID: req.user._id })
     .skip((page - 1) * size)

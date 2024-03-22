@@ -3,10 +3,15 @@ import jwt from "jsonwebtoken";
 export const generateToken = (
   payload,
   signature = process.env.TOKEN_SIGNATURE,
-  expiresIn = "1h"
+  expiresIn = ""
 ) => {
-  const token = jwt.sign(payload, signature, { expiresIn });
-  return token;
+  if (expiresIn) {
+    const token = jwt.sign(payload, signature, { expiresIn });
+    return token;
+  } else {
+    const token = jwt.sign(payload, signature);
+    return token;
+  }
 };
 
 export const verifyToken = (token, signature = process.env.TOKEN_SIGNATURE) => {
