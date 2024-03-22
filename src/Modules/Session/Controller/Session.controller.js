@@ -27,6 +27,7 @@ export const sendMessage = async (req, res, next) => {
         );
       } else if (!session.userID) {
         session.userID = userID;
+        await session.save();
       }
     }
     req.body.session = session;
