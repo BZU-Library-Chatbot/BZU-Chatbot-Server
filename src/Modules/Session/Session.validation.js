@@ -14,7 +14,7 @@ export const getAll = joi.object({
 });
 
 export const getMessages = joi.object({
-  id: generalFields.id,
+  id: generalFields.id.required(),
   page: joi.number().min(1).default(1),
   size: joi.number().min(1).max(30).default(10),
 });
