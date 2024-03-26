@@ -332,7 +332,8 @@ export const newConfirmEmail = async (req, res) => {
   }
 
   if (user.confirmEmail) {
-    return res.status(200).redirect(`${process.env.FE_URL}`);
+    // return res.status(200).redirect(`${process.env.FE_URL}`);
+    return res.status(200).send("<p>email already confirmed</p>");
   }
   const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 60);
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
