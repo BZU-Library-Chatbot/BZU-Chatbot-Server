@@ -334,7 +334,7 @@ export const newConfirmEmail = async (req, res) => {
   if (user.confirmEmail) {
     return res.status(200).redirect(`${process.env.FE_URL}`);
   }
-  const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 30);
+  const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 60);
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
   const html = `<!DOCTYPE html>
     <html>
@@ -591,7 +591,7 @@ export const newConfirmEmail = async (req, res) => {
   return res
     .status(200)
     .send(
-      "<p> new confirmation email is in your inbox, it will expire after 30 min!</p>"
+      "<p> new confirmation email is in your inbox, it will expire after 60 min!</p>"
     );
 };
 

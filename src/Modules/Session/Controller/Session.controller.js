@@ -4,7 +4,8 @@ import userModel from "../../../../DB/model/User.model.js";
 import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
-  const { message, sessionID, userID } = req.body; // this msg to be sent to chatbot
+  const { message, sessionID } = req.body; // this msg to be sent to chatbot
+  const userID = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
   if (userID) {
@@ -46,7 +47,7 @@ export const sendMessage = async (req, res, next) => {
       .toString()
       .replaceAll("\n", "")
       .replaceAll("\r", "")
-      .replaceAll("/", "");
+      .replaceAll(/\\/g, "");
   });
 
   python.stderr.on("data", (err) => {});
