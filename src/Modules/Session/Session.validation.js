@@ -3,7 +3,7 @@ import joi from "joi";
 
 export const sendMessage = joi.object({
   message: joi.string().min(1).max(200),
-  sessionID: generalFields.id,
+  sessionId: generalFields.id,
 });
 
 export const getAll = joi.object({
