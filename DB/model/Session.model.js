@@ -5,7 +5,7 @@ const sessionSchema = new Schema(
     title: {
       type: String,
     },
-    userID: {
+    userId: {
       type: Types.ObjectId,
       ref: "User",
     },

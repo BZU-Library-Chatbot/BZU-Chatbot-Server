@@ -10,12 +10,12 @@ const interactionSchema = new Schema(
       type: String,
       required: true,
     },
-    sessionID: {
+    sessionId: {
       type: Types.ObjectId,
       ref: "Session",
       required: true,
     },
-    userID: {
+    userId: {
       type: Types.ObjectId,
       ref: "User",
     },
