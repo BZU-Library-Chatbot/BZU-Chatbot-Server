@@ -4,7 +4,7 @@ import userModel from "../../../../DB/model/User.model.js";
 import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
-  const { message, sessionID } = req.body; // this msg to be sent to chatbot
+  const { message, sessionId } = req.body; // this msg to be sent to chatbot
   const userID = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
@@ -15,8 +15,8 @@ export const sendMessage = async (req, res, next) => {
     }
     req.body.user = user;
   }
-  if (sessionID) {
-    const session = await sessionModel.findById(sessionID);
+  if (sessionId) {
+    const session = await sessionModel.findById(sessionId);
     if (!session) {
       return next(new Error("session not found", { cause: 404 }));
     }
@@ -56,7 +56,7 @@ export const sendMessage = async (req, res, next) => {
     const interaction = await interactionModel.create({
       message,
       response,
-      sessionID: req.body.session._id,
+      sessionId: req.body.session._id,
       userID,
     });
     res.json(interaction);
@@ -82,11 +82,11 @@ export const getMessages = async (req, res, next) => {
   const { page = 1, size = 10 } = req.query;
   const { id } = req.params;
   const messages = await interactionModel
-    .find({ sessionID: id, userID: req.user._id })
+    .find({ sessionId: id, userID: req.user._id })
     .skip((page - 1) * size)
     .limit(size);
   const totalMessages = await interactionModel.countDocuments({
-    sessionID: id,
+    sessionId: id,
     userID: req.user._id,
   });
   const totalPages = Math.ceil(totalMessages / size);
