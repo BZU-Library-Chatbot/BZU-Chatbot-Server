@@ -5,41 +5,32 @@ import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
   const { message, sessionId } = req.body; // this msg to be sent to chatbot
-  const userID = req.user?._id;
+  const userId = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
-  if (userID) {
-    const user = await userModel.findById(userID);
-    if (!user) {
-      return next(new Error("user not found", { cause: 404 }));
-    }
-    req.body.user = user;
-  }
+  
   if (sessionId) {
     const session = await sessionModel.findById(sessionId);
+    req.body.session = session;
     if (!session) {
       return next(new Error("session not found", { cause: 404 }));
     }
-    const user = req.body.user;
-    if (user) {
-      if (session.userID && !session.userID == userID) {
+
+    if (userId) {
+      if (session.userId && !session.userId == userId) {
         return next(
           new Error("this user can not access this session", { cause: 400 })
         );
-      } else if (!session.userID) {
-        session.userID = userID;
+      } else if (!session.userId) {
+        session.userId = userId;
         await session.save();
+        console.log("session saved")
       }
     }
-    req.body.session = session;
+    
   } else {
-    if (userID) {
-      const session = await sessionModel.create({ userID, title });
+      const session = await sessionModel.create({ userId, title });
       req.body.session = session;
-    } else {
-      const session = await sessionModel.create({ title });
-      req.body.session = session;
-    }
   }
   const python = spawn("python3", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
@@ -57,7 +48,7 @@ export const sendMessage = async (req, res, next) => {
       message,
       response,
       sessionId: req.body.session._id,
-      userID,
+      userId,
     });
     res.json(interaction);
   });
@@ -67,12 +58,12 @@ export const getAll = async (req, res, next) => {
   const { page = 1, size = 10, sort = "asc" } = req.query;
   const sortOrder = sort === "asc" ? 1 : -1;
   const sessions = await sessionModel
-    .find({ userID: req.user._id })
+    .find({ userId: req.user._id })
     .skip((page - 1) * size)
     .limit(size)
     .sort({ createdAt: sortOrder });
   const totalSessions = await sessionModel.countDocuments({
-    userID: req.user._id,
+    userId: req.user._id,
   });
   const totalPages = Math.ceil((await totalSessions) / size);
   return res.json({ sessions, totalPages, currentPage: page, totalSessions });
@@ -82,12 +73,13 @@ export const getMessages = async (req, res, next) => {
   const { page = 1, size = 10 } = req.query;
   const { id } = req.params;
   const messages = await interactionModel
-    .find({ sessionId: id, userID: req.user._id })
+    .find({ sessionId: id, userId: req.user._id })
     .skip((page - 1) * size)
-    .limit(size);
+    .limit(size)
+    .sort({ createdAt: -1 });
   const totalMessages = await interactionModel.countDocuments({
     sessionId: id,
-    userID: req.user._id,
+    userId: req.user._id,
   });
   const totalPages = Math.ceil(totalMessages / size);
   return res.json({ messages, totalPages, currentPage: page, totalMessages });
