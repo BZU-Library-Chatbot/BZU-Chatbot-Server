@@ -9,7 +9,6 @@ export const sendMessage = joi.object({
 export const getAll = joi.object({
   page: joi.number().min(1).default(1),
   size: joi.number().min(1).max(30).default(10),
-  sort: joi.string().valid("asc", "desc").default("asc"),
 });
 
 export const getMessages = joi.object({

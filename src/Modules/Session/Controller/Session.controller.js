@@ -56,12 +56,11 @@ export const sendMessage = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   const { page = 1, size = 10, sort = "asc" } = req.query;
-  const sortOrder = sort === "asc" ? 1 : -1;
   const sessions = await sessionModel
     .find({ userId: req.user._id })
     .skip((page - 1) * size)
     .limit(size)
-    .sort({ createdAt: sortOrder });
+    .sort({ createdAt: -1 });
   const totalSessions = await sessionModel.countDocuments({
     userId: req.user._id,
   });
