@@ -20,7 +20,10 @@ export const auth = (accessRoles = Object.values(roles)) => {
       return next(new Error("invalid token", { cause: 400 }));
     }
     const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
-    const user = await userModel.findById(decoded.id); //.select("userName role changePasswordTime");
+    if (!decoded) {
+      return next(new Error("invalid token", { cause: 401 }));
+    }
+    const user = await userModel.findById(decoded.id);
     if (!user) {
       return next(new Error("not register account", { cause: 400 }));
     }
@@ -31,9 +34,10 @@ export const auth = (accessRoles = Object.values(roles)) => {
     if (parseInt(user.changePasswordTime) > decoded.iat) {
       return next(new Error("expired token", { cause: 401 }));
     }
+  
     req.user = user;
     return next();
-  });
+  });
 };
 
 export const optionalAuth = (accessRoles = Object.values(roles)) => {
@@ -52,7 +56,10 @@ export const optionalAuth = (accessRoles = Object.values(roles)) => {
       return next(new Error("invalid token", { cause: 400 }));
     }
     const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
-    const user = await userModel.findById(decoded.id); //.select("userName role changePasswordTime");
+    if (!decoded) {
+      return next(new Error("invalid token", { cause: 401 }));
+    }
+    const user = await userModel.findById(decoded.id);
     if (!user) {
       return next(new Error("not register account", { cause: 400 }));
     }

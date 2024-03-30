@@ -15,6 +15,10 @@ export const generateToken = (
 };
 
 export const verifyToken = (token, signature = process.env.TOKEN_SIGNATURE) => {
-  const decoded = jwt.verify(token, signature);
-  return decoded;
+  try {
+    const decoded = jwt.verify(token, signature);
+    return decoded;
+  } catch (error) {
+    return null;
+    }
 };
