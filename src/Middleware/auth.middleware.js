@@ -29,7 +29,7 @@ export const auth = (accessRoles = Object.values(roles)) => {
     }
 
     if (parseInt(user.changePasswordTime) > decoded.iat) {
-      return next(new Error("expired token", { cause: 400 }));
+      return next(new Error("expired token", { cause: 401 }));
     }
     req.user = user;
     return next();
@@ -61,7 +61,7 @@ export const optionalAuth = (accessRoles = Object.values(roles)) => {
     }
 
     if (parseInt(user.changePasswordTime) > decoded.iat) {
-      return next(new Error("expired token", { cause: 400 }));
+      return next(new Error("expired token", { cause: 401 }));
     }
     req.user = user;
     return next();
