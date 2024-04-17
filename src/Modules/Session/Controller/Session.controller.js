@@ -4,7 +4,7 @@ import userModel from "../../../../DB/model/User.model.js";
 import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
-  const { message, sessionId } = req.body; // this msg to be sent to chatbot
+  const { message, sessionId } = req.body; 
   const userId = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
@@ -24,7 +24,6 @@ export const sendMessage = async (req, res, next) => {
       } else if (!session.userId) {
         session.userId = userId;
         await session.save();
-        console.log("session saved")
       }
     }
     

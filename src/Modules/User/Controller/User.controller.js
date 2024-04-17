@@ -1,13 +1,11 @@
 import userModel from "../../../../DB/model/User.model.js";
 import cloudinary from "../../../Services/cloudinary.js";
-import { asyncHandler } from "../../../Services/errorHandling.js";
 import { compare, hash } from "../../../Services/hashAndCompare.js";
 
 export const profilePic = async (req, res, next) => {
   if (!req.file) {
     return next(new Error("please provide a file", { cause: 400 }));
   }
-  // return res.json(req.file.path);
   const { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
     { folder: `${process.env.APP_NAME}/user/${req.user.userName}/profile` }

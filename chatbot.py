@@ -25,6 +25,7 @@ if len(sys.argv) > 1:
 
     print(generated_text)
 else:
+    # TODO: Throw an error
     print("No argument provided")
 
 

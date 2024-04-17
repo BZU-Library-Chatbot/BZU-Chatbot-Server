@@ -18,7 +18,7 @@ const validationRefreshToken = async (value) => {
       value.split(process.env.BEARERKEY)[1],
       process.env.REFRESH_TOKEN
     );
-    const user = await userModel.findById(decoded?.id); //.select("userName role changePasswordTime");
+    const user = await userModel.findById(decoded?.id);
     if (!user) {
       return next(new Error("not register account", { cause: 400 }));
     }

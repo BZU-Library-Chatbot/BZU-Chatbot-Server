@@ -49,8 +49,6 @@ function generateCustomerInformation(doc, invoice) {
     .font("Helvetica")
     .text(invoice.shipping.address, 300, customerInformationTop + 15)
     .text(
-      //   invoice.shipping.city +
-      // ", " +
       invoice.shipping.address + ", " + invoice.shipping.country,
       300,
       customerInformationTop + 30
@@ -69,7 +67,6 @@ function generateInvoiceTable(doc, invoice) {
     doc,
     invoiceTableTop,
     "Item",
-    // "Description",
     "Unit Cost",
     "Quantity",
     "Line Total"
@@ -84,7 +81,6 @@ function generateInvoiceTable(doc, invoice) {
       doc,
       position,
       item.name,
-      // item.description,
       formatCurrency(item.unitPrice * 100),
       item.qty,
       formatCurrency(item.finalPrice * 100)

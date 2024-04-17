@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { asyncHandler } from "./errorHandling.js";
 
 export const generateToken = (
   payload,
@@ -21,4 +22,4 @@ export const verifyToken = (token, signature = process.env.TOKEN_SIGNATURE) => {
   } catch (error) {
     return null;
     }
-};
+}

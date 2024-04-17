@@ -5,7 +5,6 @@ import {
 } from "../../../Services/generateAndVerifyToken.js";
 import { compare, hash } from "../../../Services/hashAndCompare.js";
 import { sendEmail } from "../../../Services/sendEmail.js";
-import { asyncHandler } from "../../../Services/errorHandling.js";
 import { customAlphabet } from "nanoid";
 
 export const signup = async (req, res, next) => {
@@ -332,8 +331,8 @@ export const newConfirmEmail = async (req, res) => {
   }
 
   if (user.confirmEmail) {
-    // return res.status(200).redirect(`${process.env.FE_URL}`);
-    return res.status(200).send("<p>email already confirmed</p>");
+    // TODO: Set a flag in the local storage to show a toast that email is confirmed
+    return res.status(200).redirect(`${process.env.FE_URL}`);
   }
   const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 60);
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
