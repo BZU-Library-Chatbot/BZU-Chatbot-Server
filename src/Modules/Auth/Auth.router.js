@@ -32,7 +32,7 @@ router.get(
 router.patch(
   "/sendCode",
   validation(validators.sendCode),
-  (AuthController.sendCode)
+  asyncHandler(AuthController.sendCode)
 );
 
 router.patch(
