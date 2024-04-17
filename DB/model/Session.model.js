@@ -1,17 +1,19 @@
-import mongoose, {Schema,Types,model} from 'mongoose';
+import mongoose, { Schema, Types, model } from "mongoose";
 
-const sessionSchema = new Schema ({
-    title:{
-        type:String,
+const sessionSchema = new Schema(
+  {
+    title: {
+      type: String,
     },
-    userID:{
-        type:Types.ObjectId,
-        ref:"User",
+    userId: {
+      type: Types.ObjectId,
+      ref: "User",
     },
-},
-{
-    timestamps:true
-})
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const sessionModel = mongoose.models.Session ||  model('Session', sessionSchema);
+const sessionModel = mongoose.models.Session || model("Session", sessionSchema);
 export default sessionModel;

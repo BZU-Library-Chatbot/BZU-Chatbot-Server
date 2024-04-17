@@ -4,55 +4,50 @@ import userModel from "../../../../DB/model/User.model.js";
 import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
-  const { message, sessionID, userID } = req.body; // this msg to be sent to chatbot
+  const { message, sessionId } = req.body; 
+  const userId = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
-  if (userID) {
-    const user = await userModel.findById(userID);
-    if (!user) {
-      return next(new Error("user not found", { cause: 404 }));
-    }
-    req.body.user = user;
-  }
-  if (sessionID) {
-    const session = await sessionModel.findById(sessionID);
+  
+  if (sessionId) {
+    const session = await sessionModel.findById(sessionId);
+    req.body.session = session;
     if (!session) {
       return next(new Error("session not found", { cause: 404 }));
     }
-    const user = req.body.user;
-    if (user) {
-      if (session.userID && !session.userID == userID) {
+
+    if (userId) {
+      if (session.userId && !session.userId == userId) {
         return next(
           new Error("this user can not access this session", { cause: 400 })
         );
-      } else if (!session.userID) {
-        session.userID = userID;
+      } else if (!session.userId) {
+        session.userId = userId;
+        await session.save();
       }
     }
-    req.body.session = session;
+    
   } else {
-    if (userID) {
-      const session = await sessionModel.create({ userID, title });
+      const session = await sessionModel.create({ userId, title });
       req.body.session = session;
-    } else {
-      const session = await sessionModel.create({ title });
-      req.body.session = session;
-    }
   }
-  const python = spawn("python", ["./chatbot.py", message]);
+  const python = spawn("python3", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
-    response = botResponse.toString();
+    response = botResponse
+      .toString()
+      .replaceAll("\n", "")
+      .replaceAll("\r", "")
+      .replaceAll(/\\/g, "");
   });
 
   python.stderr.on("data", (err) => {});
 
   python.on("close", async (code) => {
-    //console.log(`Python script exited with code ${code}`);
-    console.log("here", req.body.session);
     const interaction = await interactionModel.create({
       message,
       response,
-      sessionID: req.body.session._id,
+      sessionId: req.body.session._id,
+      userId,
     });
     res.json(interaction);
   });
@@ -60,30 +55,30 @@ export const sendMessage = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   const { page = 1, size = 10, sort = "asc" } = req.query;
-  const sortOrder = sort === "asc" ? 1 : -1;
   const sessions = await sessionModel
-    .find({ userID: req.user._id })
+    .find({ userId: req.user._id })
     .skip((page - 1) * size)
     .limit(size)
-    .sort({ createdAt: sortOrder });
+    .sort({ createdAt: -1 });
   const totalSessions = await sessionModel.countDocuments({
-    userID: req.user._id,
+    userId: req.user._id,
   });
   const totalPages = Math.ceil((await totalSessions) / size);
   return res.json({ sessions, totalPages, currentPage: page, totalSessions });
 };
 
 export const getMessages = async (req, res, next) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, size = 10 } = req.query;
   const { id } = req.params;
   const messages = await interactionModel
-    .find({ sessionID: id, userID: req.user._id })
-    .skip((page - 1) * limit)
-    .limit(limit);
+    .find({ sessionId: id, userId: req.user._id })
+    .skip((page - 1) * size)
+    .limit(size)
+    .sort({ createdAt: -1 });
   const totalMessages = await interactionModel.countDocuments({
-    sessionID: id,
-    userID: req.user._id,
+    sessionId: id,
+    userId: req.user._id,
   });
-  const totalPages = Math.ceil(totalMessages / limit);
+  const totalPages = Math.ceil(totalMessages / size);
   return res.json({ messages, totalPages, currentPage: page, totalMessages });
 };

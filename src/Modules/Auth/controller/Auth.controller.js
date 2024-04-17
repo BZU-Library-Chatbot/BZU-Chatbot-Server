@@ -5,7 +5,6 @@ import {
 } from "../../../Services/generateAndVerifyToken.js";
 import { compare, hash } from "../../../Services/hashAndCompare.js";
 import { sendEmail } from "../../../Services/sendEmail.js";
-import { asyncHandler } from "../../../Services/errorHandling.js";
 import { customAlphabet } from "nanoid";
 
 export const signup = async (req, res, next) => {
@@ -332,9 +331,10 @@ export const newConfirmEmail = async (req, res) => {
   }
 
   if (user.confirmEmail) {
+    // TODO: Set a flag in the local storage to show a toast that email is confirmed
     return res.status(200).redirect(`${process.env.FE_URL}`);
   }
-  const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 30);
+  const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 60);
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
   const html = `<!DOCTYPE html>
     <html>
@@ -591,7 +591,7 @@ export const newConfirmEmail = async (req, res) => {
   return res
     .status(200)
     .send(
-      "<p> new confirmation email is in your inbox, it will expire after 30 min!</p>"
+      "<p> new confirmation email is in your inbox, it will expire after 60 min!</p>"
     );
 };
 
