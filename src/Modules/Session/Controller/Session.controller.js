@@ -4,11 +4,11 @@ import userModel from "../../../../DB/model/User.model.js";
 import interactionModel from "../../../../DB/model/Interaction.model.js";
 
 export const sendMessage = async (req, res, next) => {
-  const { message, sessionId } = req.body; 
+  const { message, sessionId } = req.body;
   const userId = req.user?._id;
   let response;
   let title = "This is a dummy session title for now.";
-  
+
   if (sessionId) {
     const session = await sessionModel.findById(sessionId);
     req.body.session = session;
@@ -26,10 +26,9 @@ export const sendMessage = async (req, res, next) => {
         await session.save();
       }
     }
-    
   } else {
-      const session = await sessionModel.create({ userId, title });
-      req.body.session = session;
+    const session = await sessionModel.create({ userId, title });
+    req.body.session = session;
   }
   const python = spawn("python3", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
@@ -80,5 +79,6 @@ export const getMessages = async (req, res, next) => {
     userId: req.user._id,
   });
   const totalPages = Math.ceil(totalMessages / size);
+  messages.reverse();
   return res.json({ messages, totalPages, currentPage: page, totalMessages });
 };

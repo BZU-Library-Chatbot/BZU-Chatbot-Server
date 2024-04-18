@@ -625,9 +625,13 @@ export const login = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   let { refreshToken } = req.body;
   refreshToken = refreshToken.split(process.env.BEARERKEY)[1];
-  if (!refreshToken)
+  if (!refreshToken) {
     return next(new Error("invalid bearer key", { cause: 400 }));
+  }
   const decoded = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
+  if (!decoded) {
+    return next(new Error("invalid token", { cause: 401 }));
+  }
   const token = generateToken(
     { id: decoded.id, role: decoded.role },
     process.env.LOGIN_TOKEN,

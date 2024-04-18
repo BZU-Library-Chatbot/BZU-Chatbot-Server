@@ -44,7 +44,7 @@ router.patch(
 router.post(
   "/refresh",
   validation(validators.refresh),
-  asyncHandler(AuthController.refreshToken)
+  (AuthController.refreshToken)
 );
 
 export default router;
