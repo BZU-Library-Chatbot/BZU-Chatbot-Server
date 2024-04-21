@@ -1,4 +1,4 @@
-import { generalFields } from "../../Middleware/validation.js";
+import { generalFields } from "../../Middleware/validation.ts";
 import joi from "joi";
 
 export const profilePic = joi.object({

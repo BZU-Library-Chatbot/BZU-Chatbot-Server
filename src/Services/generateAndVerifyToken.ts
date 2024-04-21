@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { asyncHandler } from "./errorHandling.js";
+import { asyncHandler } from "./errorHandling.ts";
 
 export const generateToken = (
   payload,

@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { MulterFile } from "multer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,11 +29,21 @@ function fileUpload(customPath = "public", customValidation = []) {
     },
   });
 
-  function fileFilter(req, file, cb) {
+  interface CustomFile extends MulterFile {
+    mimetype: string;
+  }
+
+  function fileFilter(
+    req: Request,
+    file: CustomFile,
+    cb: (error: Error | null, acceptFile: boolean) => void
+  ) {
+    const customValidation: string[] = ["image/jpeg", "image/png"];
+
     if (customValidation.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb("invalid format", false);
+      cb(new Error("invalid format"), false);
     }
   }
   const upload = multer({ fileFilter, storage });

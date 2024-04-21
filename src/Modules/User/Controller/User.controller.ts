@@ -4,7 +4,10 @@ import { compare, hash } from "../../../Services/hashAndCompare.js";
 
 export const profilePic = async (req, res, next) => {
   if (!req.file) {
-    return next(new Error("please provide a file", { cause: 400 }));
+    const error = new Error("please provide a file") as any;
+    error.cause = 400;
+
+    return error;
   }
   const { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
@@ -23,7 +26,10 @@ export const profilePic = async (req, res, next) => {
 
 export const coverPic = async (req, res, next) => {
   if (!req.files) {
-    return next(new Error("please provide a file", { cause: 400 }));
+    const error = new Error("please provide a file") as any;
+    error.cause = 400;
+
+    return error;
   }
 
   const coverPic = [];
@@ -32,6 +38,13 @@ export const coverPic = async (req, res, next) => {
       file.path,
       { folder: `${process.env.APP_NAME}/user/${req.user.userName}/cover` }
     );
+    interface ImageData {
+      secure_url: string;
+      public_id: string;
+    }
+
+    const coverPic: ImageData[] = [];
+
     coverPic.push({ secure_url, public_id });
   }
   const user = await userModel.findByIdAndUpdate(
@@ -74,6 +87,11 @@ export const makeAdmin = async (req, res, next) => {
     { role: "Admin" },
     { new: true }
   );
-  if (!user) return next(new Error("no user found", { cause: 404 }));
+  if (!user) {
+    const error = new Error("not register account") as any;
+    error.cause = 404;
+
+    return error;
+  }
   return res.status(200).json({ message: "success", user });
 };

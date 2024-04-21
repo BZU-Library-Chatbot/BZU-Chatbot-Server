@@ -1,8 +1,8 @@
-import connectDB from "../../DB/connection.js";
-import { globalErrorHandle } from "../Services/errorHandling.js";
-import AuthRouter from "./Auth/Auth.router.js";
-import UserRouter from "./User/User.router.js";
-import SessionRouter from "./Session/Session.router.js";
+import connectDB from "../../DB/connection.ts";
+import { globalErrorHandle } from "../Services/errorHandling.ts";
+import AuthRouter from "./Auth/Auth.router.ts";
+import UserRouter from "./User/User.router.ts";
+import SessionRouter from "./Session/Session.router.ts";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";

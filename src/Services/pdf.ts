@@ -69,7 +69,8 @@ function generateInvoiceTable(doc, invoice) {
     "Item",
     "Unit Cost",
     "Quantity",
-    "Line Total"
+    "Line Total",
+    ""
   );
   generateHr(doc, invoiceTableTop + 20);
   doc.font("Helvetica");
@@ -83,7 +84,8 @@ function generateInvoiceTable(doc, invoice) {
       item.name,
       formatCurrency(item.unitPrice * 100),
       item.qty,
-      formatCurrency(item.finalPrice * 100)
+      formatCurrency(item.finalPrice * 100),
+      ""
     );
 
     generateHr(doc, position + 20);

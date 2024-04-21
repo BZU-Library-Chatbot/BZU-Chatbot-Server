@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  const dbUrl : string = process.env.DB_LOCAL || "";
   return await mongoose
-    .connect(process.env.DB_LOCAL)
+    .connect(dbUrl)
     .then(() => {
       console.log("connect db");
     })

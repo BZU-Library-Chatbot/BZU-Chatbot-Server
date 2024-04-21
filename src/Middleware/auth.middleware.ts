@@ -1,6 +1,6 @@
-import userModel from "../../DB/model/User.model.js";
-import { asyncHandler } from "../Services/errorHandling.js";
-import { verifyToken } from "../Services/generateAndVerifyToken.js";
+import userModel from "../../DB/model/User.model.ts";
+import { asyncHandler } from "../Services/errorHandling.ts";
+import { verifyToken } from "../Services/generateAndVerifyToken.ts";
 
 export const roles = {
   Admin: "Admin",
@@ -13,26 +13,44 @@ export const auth = (accessRoles = Object.values(roles)) => {
     const { authorization } = req.headers;
 
     if (!authorization?.startsWith(process.env.BEARERKEY)) {
-      return next(new Error("invalid bearer key", { cause: 400 }));
+      const error = new Error("invalid bearer key") as any;
+      error.cause = 400;
+
+      return error;
     }
     const token = authorization.split(process.env.BEARERKEY)[1];
     if (!token) {
-      return next(new Error("invalid token", { cause: 400 }));
+      const error = new Error("invalid token") as any;
+      error.cause = 400;
+
+      return error;
     }
     const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
     if (!decoded) {
-      return next(new Error("invalid token", { cause: 401 }));
+      const error = new Error("invalid token") as any;
+      error.cause = 401;
+
+      return error;
     }
     const user = await userModel.findById(decoded.id);
     if (!user) {
-      return next(new Error("not register account", { cause: 400 }));
+      const error = new Error("not register account") as any;
+      error.cause = 400;
+
+      return error;
     }
     if (!accessRoles.includes(user.role)) {
-      return next(new Error("not authorized", { cause: 403 }));
+      const error = new Error("expired token") as any;
+      error.cause = 403;
+
+      return error;
     }
 
     if (parseInt(user.changePasswordTime) > decoded.iat) {
-      return next(new Error("expired token", { cause: 401 }));
+      const error = new Error("expired token") as any;
+      error.cause = 401;
+
+      return error;
     }
 
     req.user = user;
@@ -49,26 +67,44 @@ export const optionalAuth = (accessRoles = Object.values(roles)) => {
     }
 
     if (!authorization?.startsWith(process.env.BEARERKEY)) {
-      return next(new Error("invalid bearer key", { cause: 400 }));
+      const error = new Error("invalid bearer key") as any;
+      error.cause = 400;
+
+      return error;
     }
     const token = authorization.split(process.env.BEARERKEY)[1];
     if (!token) {
-      return next(new Error("invalid token", { cause: 400 }));
+      const error = new Error("invalid token") as any;
+      error.cause = 400;
+
+      return error;
     }
     const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
     if (!decoded) {
-      return next(new Error("invalid token", { cause: 401 }));
+      const error = new Error("invalid token") as any;
+      error.cause = 401;
+
+      return error;
     }
     const user = await userModel.findById(decoded.id);
     if (!user) {
-      return next(new Error("not register account", { cause: 400 }));
+      const error = new Error("not register account") as any;
+      error.cause = 400;
+
+      return error;
     }
     if (!accessRoles.includes(user.role)) {
-      return next(new Error("not authorized", { cause: 403 }));
+      const error = new Error("not register account") as any;
+      error.cause = 403;
+
+      return error;
     }
 
     if (parseInt(user.changePasswordTime) > decoded.iat) {
-      return next(new Error("expired token", { cause: 401 }));
+      const error = new Error("expired token") as any;
+      error.cause = 401;
+
+      return error;
     }
     req.user = user;
     return next();

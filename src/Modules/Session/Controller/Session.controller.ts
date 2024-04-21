@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
-import sessionModel from "../../../../DB/model/Session.model.js";
-import userModel from "../../../../DB/model/User.model.js";
-import interactionModel from "../../../../DB/model/Interaction.model.js";
+import sessionModel from "../../../../DB/model/Session.model.ts";
+import userModel from "../../../../DB/model/User.model.ts";
+import interactionModel from "../../../../DB/model/Interaction.model.ts";
 
 export const sendMessage = async (req, res, next) => {
   const { message, sessionId } = req.body;
@@ -13,14 +13,15 @@ export const sendMessage = async (req, res, next) => {
     const session = await sessionModel.findById(sessionId);
     req.body.session = session;
     if (!session) {
-      return next(new Error("session not found", { cause: 404 }));
+      const error = new Error("session not found") as any;
+      error.cause = 404;
+
+      return error;
     }
 
     if (userId) {
       if (session.userId && !session.userId == userId) {
-        return next(
-          new Error("this user can not access this session", { cause: 400 })
-        );
+        return next(new Error("this user can not access this session"));
       } else if (!session.userId) {
         session.userId = userId;
         await session.save();

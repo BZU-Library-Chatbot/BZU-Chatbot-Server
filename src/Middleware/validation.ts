@@ -1,10 +1,10 @@
 import joi from "joi";
 import { Types } from "mongoose";
-import userModel from "../../DB/model/User.model.js";
-import { roles } from "./auth.middleware.js";
-import { verifyToken } from "../Services/generateAndVerifyToken.js";
+import userModel from "../../DB/model/User.model.ts";
+import { roles } from "./auth.middleware.ts";
+import { verifyToken } from "../Services/generateAndVerifyToken.ts";
 
-export const validationObjectId = (value, helper) => {
+export const validationObjectId = (value: any, helper: any) => {
   if (Types.ObjectId.isValid(value)) {
     return true;
   } else {
@@ -12,7 +12,7 @@ export const validationObjectId = (value, helper) => {
   }
 };
 
-const validationRefreshToken = async (value) => {
+const validationRefreshToken = async (value: any) => {
   try {
     const decoded = verifyToken(
       value.split(process.env.BEARERKEY)[1],
@@ -20,14 +20,23 @@ const validationRefreshToken = async (value) => {
     );
     const user = await userModel.findById(decoded?.id);
     if (!user) {
-      return next(new Error("not register account", { cause: 400 }));
+      const error = new Error("not register account") as any;
+      error.cause = 400;
+
+      return error;
     }
     if (!Object.values(roles).includes(user.role)) {
-      return next(new Error("not authorized", { cause: 403 }));
+      const error = new Error("not authorized") as any;
+      error.cause = 400;
+
+      return error;
     }
 
     if (parseInt(user.changePasswordTime) > decoded.iat) {
-      return next(new Error("expired token", { cause: 400 }));
+      const error = new Error("expired token") as any;
+      error.cause = 400;
+
+      return error;
     }
 
     return true;
