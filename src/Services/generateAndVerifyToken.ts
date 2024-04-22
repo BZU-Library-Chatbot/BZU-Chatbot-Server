@@ -4,7 +4,7 @@ import { asyncHandler } from "./errorHandling.ts";
 export const generateToken = (
   payload,
   signature = process.env.TOKEN_SIGNATURE,
-  expiresIn = ""
+  expiresIn: any = ""
 ) => {
   if (expiresIn) {
     const token = jwt.sign(payload, signature, { expiresIn });
@@ -20,6 +20,8 @@ export const verifyToken = (token, signature = process.env.TOKEN_SIGNATURE) => {
     const decoded = jwt.verify(token, signature);
     return decoded;
   } catch (error) {
-    return null;
-    }
-}
+    console.log("error: " + error);
+
+    return null;
+  }
+};

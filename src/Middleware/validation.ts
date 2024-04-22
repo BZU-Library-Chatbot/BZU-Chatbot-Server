@@ -66,7 +66,7 @@ export const generalFields = {
 };
 
 const validation = (schema) => {
-  return (req, res, next) => {
+  return (req: any, res: any, next: any) => {
     const inputsData = req.file
       ? { ...req.body, ...req.params, ...req.query, file: req.file }
       : req.files

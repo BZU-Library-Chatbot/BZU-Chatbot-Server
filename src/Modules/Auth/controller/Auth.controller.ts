@@ -7,7 +7,7 @@ import { compare, hash } from "../../../Services/hashAndCompare.ts";
 import { sendEmail } from "../../../Services/sendEmail.ts";
 import { customAlphabet } from "nanoid";
 
-export const signup = async (req, res, next) => {
+export const signup = async (req: any, res: any, next: any) => {
   const { userName, email, password } = req.body;
 
   const user = await userModel.findOne({ email });
@@ -15,18 +15,14 @@ export const signup = async (req, res, next) => {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
 
-  const token = generateToken(
-    { email },
-    process.env.TOKEN_SIGNATURE,
-    (60 * 30).toString()
-  );
+  const token = generateToken({ email }, process.env.TOKEN_SIGNATURE, 60 * 30);
   const refreshToken = generateToken(
     { email },
     process.env.TOKEN_SIGNATURE,
-    (60 * 60 * 72).toString()
+    60 * 60 * 72
   );
 
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}`;
@@ -303,12 +299,13 @@ export const signup = async (req, res, next) => {
   return res.status(201).json({ message: "success", user: createUser._id });
 };
 
-export const confirmEmail = async (req, res, next) => {
+export const confirmEmail = async (req: any, res: any, next: any) => {
   const { token } = req.params;
 
-  const decoded = verifyToken(token, process.env.SIGNUP_TOKEN);
+  const decoded = verifyToken(token);
+
   if (!decoded?.email) {
-    return next(new Error("invalid token payload"), { cause: 404 });
+    return next(new Error("invalid token payload"), { cause: 400 });
   }
 
   const user = await userModel.updateOne(
@@ -323,16 +320,16 @@ export const confirmEmail = async (req, res, next) => {
   return res.status(200).json({ message: "Email confirmed" });
 };
 
-export const newConfirmEmail = async (req, res) => {
+export const newConfirmEmail = async (req: any, res: any, next: any) => {
   const { token } = req.params;
 
-  const { email } = verifyToken(token, process.env.SIGNUP_TOKEN);
+  const { email } = verifyToken(token);
 
   if (!email) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
 
   const user = await userModel.findOne({ email });
@@ -340,7 +337,7 @@ export const newConfirmEmail = async (req, res) => {
     const error = new Error("not register account") as any;
     error.cause = 404;
 
-    return error;
+    return next(error);
   }
 
   if (user.confirmEmail) {
@@ -612,27 +609,26 @@ export const newConfirmEmail = async (req, res) => {
     );
 };
 
-export const login = async (req, res, next) => {
+export const login = async (req: any, res: any, next: any) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
   if (!user) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   } else {
     if (!user.confirmEmail) {
       const error = new Error("not register account") as any;
       error.cause = 400;
 
-      return error;
+      return next(error);
     }
     const match = compare(password, user.password);
     if (!match) {
       const error = new Error("not register account") as any;
       error.cause = 400;
-
-      return error;
+      return next(error);
     } else {
       const token = generateToken(
         { id: user._id, role: user.role },
@@ -648,21 +644,21 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const refreshToken = async (req, res, next) => {
+export const refreshToken = async (req: any, res: any, next: any) => {
   let { refreshToken } = req.body;
   refreshToken = refreshToken.split(process.env.BEARERKEY)[1];
   if (!refreshToken) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
   const decoded = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
   if (!decoded) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
   const token = generateToken(
     { id: decoded.id, role: decoded.role },
@@ -672,7 +668,7 @@ export const refreshToken = async (req, res, next) => {
   return res.status(200).json({ message: "success", token, refreshToken });
 };
 
-export const sendCode = async (req, res, next) => {
+export const sendCode = async (req: any, res: any, next: any) => {
   const { email } = req.body;
   let code: string = customAlphabet(
     process.env.customAlphabet ||
@@ -689,26 +685,26 @@ export const sendCode = async (req, res, next) => {
     const error = new Error("not register account") as any;
     error.cause = 404;
 
-    return error;
+    return next(error);
   }
   await sendEmail(email, "password reset code", html, []);
   return res.status(200).json({ message: "success" });
 };
 
-export const forgetPassword = async (req, res, next) => {
+export const forgetPassword = async (req: any, res: any, next: any) => {
   let { email, password, code, cPassword } = req.body;
   let user = await userModel.findOne({ email });
   if (!user) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
   if (user.forgetCode != code || user.forgetCode == null) {
     const error = new Error("not register account") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
   password = hash(password);
   user.password = password;

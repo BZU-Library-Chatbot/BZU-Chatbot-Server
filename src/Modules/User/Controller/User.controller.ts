@@ -2,12 +2,12 @@ import userModel from "../../../../DB/model/User.model.js";
 import cloudinary from "../../../Services/cloudinary.js";
 import { compare, hash } from "../../../Services/hashAndCompare.js";
 
-export const profilePic = async (req, res, next) => {
+export const profilePic = async (req: any, res: any, next: any) => {
   if (!req.file) {
     const error = new Error("please provide a file") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
   const { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
@@ -24,12 +24,12 @@ export const profilePic = async (req, res, next) => {
   return res.json({ message: "success" });
 };
 
-export const coverPic = async (req, res, next) => {
+export const coverPic = async (req: any, res: any, next: any) => {
   if (!req.files) {
     const error = new Error("please provide a file") as any;
     error.cause = 400;
 
-    return error;
+    return next(error);
   }
 
   const coverPic = [];
@@ -55,7 +55,7 @@ export const coverPic = async (req, res, next) => {
   return res.json({ message: "success", user });
 };
 
-export const updatePassword = async (req, res, next) => {
+export const updatePassword = async (req: any, res: any, next: any) => {
   const { oldPassword, newPassword } = req.body;
 
   const user = await userModel.findById(req.user._id);
@@ -68,7 +68,7 @@ export const updatePassword = async (req, res, next) => {
   return res.json({ message: "success" });
 };
 
-export const shareProfile = async (req, res, next) => {
+export const shareProfile = async (req: any, res: any, next: any) => {
   const user = await userModel
     .findById(req.params.id)
     .select("userName email ");
@@ -80,7 +80,7 @@ export const shareProfile = async (req, res, next) => {
   }
 };
 
-export const makeAdmin = async (req, res, next) => {
+export const makeAdmin = async (req: any, res: any, next: any) => {
   const { id } = req.params;
   const user = await userModel.findByIdAndUpdate(
     { id },
@@ -91,7 +91,7 @@ export const makeAdmin = async (req, res, next) => {
     const error = new Error("not register account") as any;
     error.cause = 404;
 
-    return error;
+    return next(error);
   }
   return res.status(200).json({ message: "success", user });
 };
