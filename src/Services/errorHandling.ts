@@ -1,12 +1,12 @@
-export const asyncHandler = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch((err) => {
+export const asyncHandler = (fn: any) => {
+  return (req: any, res: any, next: any) => {
+    fn(req, res, next).catch((err: any) => {
       return next(new Error(err));
     });
   };
 };
 
-export const globalErrorHandle = (err, req, res, next) => {
+export const globalErrorHandle = (err: any, req: any, res: any, next: any) => {
   if (err) {
     if (process.env.MOOD == "DEV") {
       return res

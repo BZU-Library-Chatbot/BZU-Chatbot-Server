@@ -1,7 +1,12 @@
 import nodemailer from "nodemailer";
 
 // The async..await is not allowed in global scope, must use a wrapper
-export async function sendEmail(to, subject, html, attachments) {
+export async function sendEmail(
+  to: any,
+  subject: any,
+  html: any,
+  attachments: any
+) {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     secure: true,

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import * as sessionController from "./Controller/Session.controller.js";
-import validation from "../../Middleware/validation.js";
-import * as validators from "./Session.validation.js";
-import { asyncHandler } from "../../Services/errorHandling.js";
-import { auth, optionalAuth } from "../../Middleware/auth.middleware.js";
+import * as sessionController from "./Controller/Session.controller.ts";
+import validation from "../../Middleware/validation.ts";
+import * as validators from "./Session.validation.ts";
+import { asyncHandler } from "../../Services/errorHandling.ts";
+import { auth, optionalAuth } from "../../Middleware/auth.middleware.ts";
 
 const router = Router();
 

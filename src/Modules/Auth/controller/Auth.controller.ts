@@ -1,18 +1,21 @@
-import userModel from "../../../../DB/model/User.model.js";
+import userModel from "../../../../DB/model/User.model.ts";
 import {
   generateToken,
   verifyToken,
-} from "../../../Services/generateAndVerifyToken.js";
-import { compare, hash } from "../../../Services/hashAndCompare.js";
-import { sendEmail } from "../../../Services/sendEmail.js";
+} from "../../../Services/generateAndVerifyToken.ts";
+import { compare, hash } from "../../../Services/hashAndCompare.ts";
+import { sendEmail } from "../../../Services/sendEmail.ts";
 import { customAlphabet } from "nanoid";
 
-export const signup = async (req, res, next) => {
+export const signup = async (req: any, res: any, next: any) => {
   const { userName, email, password } = req.body;
 
   const user = await userModel.findOne({ email });
   if (user) {
-    return next(new Error("email already exists", { cause: 409 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
 
   const token = generateToken({ email }, process.env.TOKEN_SIGNATURE, 60 * 30);
@@ -284,7 +287,7 @@ export const signup = async (req, res, next) => {
     
     </body>
     </html>`;
-  await sendEmail(email, "Confirm Email", html);
+  await sendEmail(email, "Confirm Email", html, []);
 
   const HashPassword = hash(password);
   const createUser = await userModel.create({
@@ -296,12 +299,13 @@ export const signup = async (req, res, next) => {
   return res.status(201).json({ message: "success", user: createUser._id });
 };
 
-export const confirmEmail = async (req, res, next) => {
+export const confirmEmail = async (req: any, res: any, next: any) => {
   const { token } = req.params;
 
-  const decoded = verifyToken(token, process.env.SIGNUP_TOKEN);
+  const decoded: any = verifyToken(token);
+
   if (!decoded?.email) {
-    return next(new Error("invalid token payload"), { cause: 404 });
+    return next(new Error("invalid token payload"), { cause: 400 });
   }
 
   const user = await userModel.updateOne(
@@ -316,25 +320,35 @@ export const confirmEmail = async (req, res, next) => {
   return res.status(200).json({ message: "Email confirmed" });
 };
 
-export const newConfirmEmail = async (req, res) => {
-  const { token } = req.params;
+export const newConfirmEmail = async (req: any, res: any, next: any) => {
+  const { token }: any = req.params;
 
-  const { email } = verifyToken(token, process.env.SIGNUP_TOKEN);
+  const { email }: any = verifyToken(token);
 
   if (!email) {
-    return next(new Error("invalid token payLoad", { cause: 400 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
 
   const user = await userModel.findOne({ email });
   if (!user) {
-    return next(new Error("not registered", { cause: 404 }));
+    const error = new Error("not register account") as any;
+    error.cause = 404;
+
+    return next(error);
   }
 
   if (user.confirmEmail) {
     // TODO: Set a flag in the local storage to show a toast that email is confirmed
     return res.status(200).redirect(`${process.env.FE_URL}`);
   }
-  const newToken = generateToken({ email }, process.env.SIGNUP_TOKEN, 60 * 60);
+  const newToken = generateToken(
+    { email },
+    process.env.SIGNUP_TOKEN,
+    (60 * 60).toString()
+  );
   const link = `${req.protocol}://${req.headers.host}/auth/confirmEmail/${newToken}`;
   const html = `<!DOCTYPE html>
     <html>
@@ -586,7 +600,7 @@ export const newConfirmEmail = async (req, res) => {
     
     </body>
     </html>`;
-  await sendEmail(email, "reconfirm email", html);
+  await sendEmail(email, "ReConfirm Email", html, []);
 
   return res
     .status(200)
@@ -595,18 +609,26 @@ export const newConfirmEmail = async (req, res) => {
     );
 };
 
-export const login = async (req, res, next) => {
+export const login = async (req: any, res: any, next: any) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
   if (!user) {
-    return next(new Error("invalid login data", { cause: 400 }));
+    const error = new Error("Not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   } else {
     if (!user.confirmEmail) {
-      return next(new Error("plz verify your email", { cause: 400 }));
+      const error = new Error("Invalid credentials") as any;
+      error.cause = 400;
+
+      return next(error);
     }
     const match = compare(password, user.password);
     if (!match) {
-      return next(new Error("invalid login data", { cause: 400 }));
+      const error = new Error("Invalid credentials") as any;
+      error.cause = 400;
+      return next(error);
     } else {
       const token = generateToken(
         { id: user._id, role: user.role },
@@ -622,15 +644,21 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const refreshToken = async (req, res, next) => {
+export const refreshToken = async (req: any, res: any, next: any) => {
   let { refreshToken } = req.body;
   refreshToken = refreshToken.split(process.env.BEARERKEY)[1];
   if (!refreshToken) {
-    return next(new Error("invalid bearer key", { cause: 400 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
-  const decoded = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
+  const decoded: any = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
   if (!decoded) {
-    return next(new Error("invalid token", { cause: 401 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
   const token = generateToken(
     { id: decoded.id, role: decoded.role },
@@ -640,30 +668,43 @@ export const refreshToken = async (req, res, next) => {
   return res.status(200).json({ message: "success", token, refreshToken });
 };
 
-export const sendCode = async (req, res, next) => {
+export const sendCode = async (req: any, res: any, next: any) => {
   const { email } = req.body;
-  let code = customAlphabet(process.env.customAlphabet, 4);
-  code = code();
+  let code: string = customAlphabet(
+    process.env.customAlphabet ||
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+    4
+  )();
+  //code = code();
   const html = `<p>Your Code is ${code}</p>`;
   const user = await userModel.findOneAndUpdate(
     { email },
     { forgetCode: code }
   );
   if (!user) {
-    return next(new Error("no user found", { cause: 404 }));
+    const error = new Error("not register account") as any;
+    error.cause = 404;
+
+    return next(error);
   }
-  await sendEmail(email, "password reset code", html);
+  await sendEmail(email, "password reset code", html, []);
   return res.status(200).json({ message: "success" });
 };
 
-export const forgetPassword = async (req, res, next) => {
+export const forgetPassword = async (req: any, res: any, next: any) => {
   let { email, password, code, cPassword } = req.body;
   let user = await userModel.findOne({ email });
   if (!user) {
-    return next(new Error("no user found", { cause: 404 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
   if (user.forgetCode != code || user.forgetCode == null) {
-    return next(new Error("invalid code", { cause: 400 }));
+    const error = new Error("not register account") as any;
+    error.cause = 400;
+
+    return next(error);
   }
   password = hash(password);
   user.password = password;

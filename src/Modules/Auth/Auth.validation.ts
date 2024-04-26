@@ -1,5 +1,5 @@
 import joi from "joi";
-import { generalFields } from "../../Middleware/validation.js";
+import { generalFields } from "../../Middleware/validation.ts";
 
 export const signupSchema = joi
   .object({

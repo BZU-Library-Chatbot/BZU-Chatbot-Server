@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as userController from "./Controller/User.controller.js";
-import { auth, roles } from "../../Middleware/auth.middleware.js";
-import { asyncHandler } from "../../Services/errorHandling.js";
-import fileUpload, { fileValidation } from "../../Services/multerCloudinary.js";
-import validation from "../../Middleware/validation.js";
-import * as validators from "./User.validation.js";
+import * as userController from "./Controller/User.controller.ts";
+import { auth, roles } from "../../Middleware/auth.middleware.ts";
+import { asyncHandler } from "../../Services/errorHandling.ts";
+import fileUpload, { fileValidation } from "../../Services/multerCloudinary.ts";
+import validation from "../../Middleware/validation.ts";
+import * as validators from "./User.validation.ts";
 const router = Router();
 
 router.patch(
@@ -25,7 +25,7 @@ router.patch(
 
 router.patch(
   "/makeAdmin/:id",
-  auth(roles.Admin),
+  auth([roles.Admin]),
   validation(validators.makeAdmin),
   asyncHandler(userController.makeAdmin)
 );

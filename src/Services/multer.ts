@@ -17,10 +17,10 @@ function fileUpload(customPath = "public", customValidation = []) {
     fs.mkdirSync(fullPath, { recursive: true });
   }
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (req: any, file: any, cb: any) => {
       cb(null, fullPath);
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: any, cb: any) => {
       const suffixName = nanoid() + file.originalname;
       file.dest = `upload/${customPath}/${suffixName}`;
 
@@ -28,13 +28,26 @@ function fileUpload(customPath = "public", customValidation = []) {
     },
   });
 
-  function fileFilter(req, file, cb) {
-    if (customValidation.includes(file.mimetype)) {
+  interface CustomFile {
+    mimetype: string;
+  }
+
+  const fileFilter: any = (
+    req: Request,
+    file: Express.Multer.File,
+    cb: any
+  ) => {
+    const validationList: string[] = customValidation.length
+      ? customValidation
+      : ["image/jpeg", "image/png"];
+
+    if (validationList.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb("invalid format", false);
+      cb(new Error("invalid format"), false);
     }
-  }
+  };
+
   const upload = multer({ fileFilter, storage });
 
   return upload;
