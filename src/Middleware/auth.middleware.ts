@@ -25,7 +25,7 @@ export const auth = (accessRoles = Object.values(roles)) => {
 
       return next(error);
     }
-    const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
+    const decoded: any = verifyToken(token, process.env.LOGIN_TOKEN);
     if (!decoded) {
       const error = new Error("invalid token") as any;
       error.cause = 401;
@@ -59,7 +59,7 @@ export const auth = (accessRoles = Object.values(roles)) => {
 };
 
 export const optionalAuth = (accessRoles = Object.values(roles)) => {
-  return asyncHandler(async (req, res, next) => {
+  return asyncHandler(async (req: any, res: any, next: any) => {
     const { authorization } = req.headers;
 
     if (!authorization) {
@@ -79,7 +79,7 @@ export const optionalAuth = (accessRoles = Object.values(roles)) => {
 
       return next(error);
     }
-    const decoded = verifyToken(token, process.env.LOGIN_TOKEN);
+    const decoded: any = verifyToken(token, process.env.LOGIN_TOKEN);
     if (!decoded) {
       const error = new Error("invalid token") as any;
       error.cause = 401;
