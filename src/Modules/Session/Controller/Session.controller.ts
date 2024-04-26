@@ -6,7 +6,7 @@ import interactionModel from "../../../../DB/model/Interaction.model.ts";
 export const sendMessage = async (req: any, res: any, next: any) => {
   const { message, sessionId } = req.body;
   const userId = req.user?._id;
-  let response;
+  let response: any;
   let title = "This is a dummy session title for now.";
 
   if (sessionId) {

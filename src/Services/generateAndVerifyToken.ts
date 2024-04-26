@@ -1,9 +1,8 @@
 import jwt from "jsonwebtoken";
-import { asyncHandler } from "./errorHandling.ts";
 
 export const generateToken = (
-  payload,
-  signature = process.env.TOKEN_SIGNATURE,
+  payload: any,
+  signature: any = process.env.TOKEN_SIGNATURE,
   expiresIn: any = ""
 ) => {
   if (expiresIn) {
@@ -15,7 +14,10 @@ export const generateToken = (
   }
 };
 
-export const verifyToken = (token, signature = process.env.TOKEN_SIGNATURE) => {
+export const verifyToken = (
+  token: any,
+  signature: any = process.env.TOKEN_SIGNATURE
+) => {
   try {
     const decoded = jwt.verify(token, signature);
     return decoded;

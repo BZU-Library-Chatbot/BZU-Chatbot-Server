@@ -1,6 +1,6 @@
-import userModel from "../../../../DB/model/User.model.js";
-import cloudinary from "../../../Services/cloudinary.js";
-import { compare, hash } from "../../../Services/hashAndCompare.js";
+import userModel from "../../../../DB/model/User.model.ts";
+import cloudinary from "../../../Services/cloudinary.ts";
+import { compare, hash } from "../../../Services/hashAndCompare.ts";
 
 export const profilePic = async (req: any, res: any, next: any) => {
   if (!req.file) {
@@ -32,7 +32,7 @@ export const coverPic = async (req: any, res: any, next: any) => {
     return next(error);
   }
 
-  const coverPic = [];
+  const coverPic: any = [];
   for (const file of req.files) {
     const { secure_url, public_id } = await cloudinary.uploader.upload(
       file.path,

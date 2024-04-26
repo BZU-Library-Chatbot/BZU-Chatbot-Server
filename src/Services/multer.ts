@@ -3,7 +3,6 @@ import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { MulterFile } from "multer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,10 +17,10 @@ function fileUpload(customPath = "public", customValidation = []) {
     fs.mkdirSync(fullPath, { recursive: true });
   }
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (req: any, file: any, cb: any) => {
       cb(null, fullPath);
     },
-    filename: (req, file, cb) => {
+    filename: (req: any, file: any, cb: any) => {
       const suffixName = nanoid() + file.originalname;
       file.dest = `upload/${customPath}/${suffixName}`;
 
@@ -29,23 +28,26 @@ function fileUpload(customPath = "public", customValidation = []) {
     },
   });
 
-  interface CustomFile extends MulterFile {
+  interface CustomFile {
     mimetype: string;
   }
 
-  function fileFilter(
+  const fileFilter: any = (
     req: Request,
-    file: CustomFile,
-    cb: (error: Error | null, acceptFile: boolean) => void
-  ) {
-    const customValidation: string[] = ["image/jpeg", "image/png"];
+    file: Express.Multer.File,
+    cb: any
+  ) => {
+    const validationList: string[] = customValidation.length
+      ? customValidation
+      : ["image/jpeg", "image/png"];
 
-    if (customValidation.includes(file.mimetype)) {
+    if (validationList.includes(file.mimetype)) {
       cb(null, true);
     } else {
       cb(new Error("invalid format"), false);
     }
-  }
+  };
+
   const upload = multer({ fileFilter, storage });
 
   return upload;

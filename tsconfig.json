@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"],
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "allowJs": true,
+    "skipDefaultLibCheck": true,
+    "moduleResolution": "NodeNext",
+    "types": ["express"]
+  },
+  "include": ["src"]
+}
