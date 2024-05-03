@@ -20,9 +20,9 @@ describe("POST /auth/signup", () => {
     [400, "", "user@example.com", "abcabcabcabc", "abcabcabcabc"], //Empty username
     [400, "User", "", "password123", "password123"], //Empty email
     [400, "User", "user@example.com", "", "password456"], //Empty password
-    [400, "User", "user@example.com", "password123", ""],//Empty Cpassword
+    [400, "User", "user@example.com", "password123", ""], //Empty Cpassword
     [400, "User", "user@example.com", "", ""], //Empty password & empty Cpassword
-    [400, "", "", "", ""], //Empty fileds 
+    [400, "", "", "", ""], //Empty fileds
     [400, "", "", "password123", "password123"], //Empty username & email
   ])(
     "should return %i when given %s, %s, %s, %s",
@@ -30,6 +30,26 @@ describe("POST /auth/signup", () => {
       const res = await request(app)
         .post("/auth/signup")
         .send({ userName, email, password, cPassword });
+      expect(res.statusCode).toBe(expected);
+    }
+  );
+});
+
+describe("POST /auth/login", () => {
+  it.each([
+    [400, "azizagmail.com", "password123"], // Invalid email format
+    [400, "mayarkarakra@gmail.com", "password123"], // Invalid credentials (email not registered)
+    [400, "azizakarakra7@gmail.com", ""], // Password is not provided
+    [400, "", "aziza0000000"], // Email is not provided
+    [400, "azizakarakra7@gmail.com", "password123"], // Registered but not confirmed
+    [200, "admin@bzu.com", "admin_password"], // Valid input
+    [400, "azizakarakra7@gmail.com", "password123765"], // Incorrect Password
+  ])(
+    "should return %i when given %s, %s",
+    async (expected, email, password) => {
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ email, password });
       expect(res.statusCode).toBe(expected);
     }
   );
