@@ -12,7 +12,7 @@ export const signup = async (req: any, res: any, next: any) => {
 
   const user = await userModel.findOne({ email });
   if (user) {
-    const error = new Error("not register account") as any;
+    const error = new Error("duplicated email") as any;
     error.cause = 400;
 
     return next(error);
