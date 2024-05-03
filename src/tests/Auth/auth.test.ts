@@ -42,8 +42,8 @@ describe("POST /auth/login", () => {
     [400, "azizakarakra7@gmail.com", ""], // Password is not provided
     [400, "", "aziza0000000"], // Email is not provided
     [400, "azizakarakra7@gmail.com", "password123"], // Registered but not confirmed
-    [200, "admin@bzu.com", "admin_password"], // Valid input
-    [400, "azizakarakra7@gmail.com", "password123765"], // Incorrect Password
+    [200, process.env.ADMIN_EMAIL , process.env.ADMIN_PASSWORD], // Valid input
+    [400, process.env.ADMIN_EMAIL, "password123765"], // Incorrect Password
   ])(
     "should return %i when given %s, %s",
     async (expected, email, password) => {
