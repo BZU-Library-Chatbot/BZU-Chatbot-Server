@@ -1,6 +1,6 @@
-import userModel from "../../DB/model/User.model.ts";
-import { asyncHandler } from "../Services/errorHandling.ts";
-import { verifyToken } from "../Services/generateAndVerifyToken.ts";
+import userModel from "../../DB/model/User.model";
+import { asyncHandler } from "../Services/errorHandling";
+import { verifyToken } from "../Services/generateAndVerifyToken";
 
 export const roles = {
   Admin: "Admin",

@@ -1,10 +1,10 @@
-import userModel from "../../../../DB/model/User.model.ts";
+import userModel from "../../../../DB/model/User.model";
 import {
   generateToken,
   verifyToken,
-} from "../../../Services/generateAndVerifyToken.ts";
-import { compare, hash } from "../../../Services/hashAndCompare.ts";
-import { sendEmail } from "../../../Services/sendEmail.ts";
+} from "../../../Services/generateAndVerifyToken";
+import { compare, hash } from "../../../Services/hashAndCompare";
+import { sendEmail } from "../../../Services/sendEmail";
 import { customAlphabet } from "nanoid";
 
 export const signup = async (req: any, res: any, next: any) => {
