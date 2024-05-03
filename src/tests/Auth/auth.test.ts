@@ -42,7 +42,7 @@ describe("POST /auth/login", () => {
     [400, "azizakarakra7@gmail.com", ""], // Password is not provided
     [400, "", "aziza0000000"], // Email is not provided
     [400, "azizakarakra7@gmail.com", "password123"], // Registered but not confirmed
-    [200, process.env.ADMIN_EMAIL , process.env.ADMIN_PASSWORD], // Valid input
+    [200, process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD], // Valid input
     [400, process.env.ADMIN_EMAIL, "password123765"], // Incorrect Password
   ])(
     "should return %i when given %s, %s",
@@ -53,4 +53,22 @@ describe("POST /auth/login", () => {
       expect(res.statusCode).toBe(expected);
     }
   );
+});
+
+describe("PATCH /auth/sendCode", () => {
+  it.each([
+    [200, process.env.ADMIN_EMAIL], // Valid input
+    [404, "tariqquraan@gmail.com"], // Email does not exist
+  ])("should return status %i for email: %s", async (expected, email) => {
+    const response = await request(app)
+      .patch("/auth/sendCode")
+      .send({ email })
+      .expect(expected);
+
+    if (expected == 200) {
+      expect(response.body.message).toEqual("success");
+    } else {
+      expect(response.body.message).toEqual("catch error");
+    }
+  });
 });
