@@ -648,14 +648,14 @@ export const refreshToken = async (req: any, res: any, next: any) => {
   let { refreshToken } = req.body;
   refreshToken = refreshToken.split(process.env.BEARERKEY)[1];
   if (!refreshToken) {
-    const error = new Error("not register account") as any;
+    const error = new Error("invalid token") as any;
     error.cause = 400;
 
     return next(error);
   }
   const decoded: any = verifyToken(refreshToken, process.env.REFRESH_TOKEN);
   if (!decoded) {
-    const error = new Error("not register account") as any;
+    const error = new Error("invalid token") as any;
     error.cause = 400;
 
     return next(error);
