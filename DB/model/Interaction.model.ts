@@ -22,8 +22,17 @@ const interactionSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+interactionSchema.virtual("session", {
+  ref: "Session",
+  localField: "sessionId",
+  foreignField: "_id",
+  justOne: true,
+});
 
 const interactionModel =
   mongoose.models.Interaction || model("Interaction", interactionSchema);

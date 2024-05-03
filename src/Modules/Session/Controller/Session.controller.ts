@@ -31,7 +31,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
     const session = await sessionModel.create({ userId, title });
     req.body.session = session;
   }
-  const python = spawn("python", ["./chatbot.py", message]);
+  const python = spawn("python3", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
     response = botResponse
       .toString()
@@ -49,6 +49,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
       sessionId: req.body.session._id,
       userId,
     });
+    await interaction.populate("session");
     res.json(interaction);
   });
 };
