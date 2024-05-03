@@ -34,3 +34,21 @@ describe("POST /auth/signup", () => {
     }
   );
 });
+
+describe("POST /auth/refreshToken", () => {
+  it.each([
+    [400, ""], // Empty refreshToken
+    [
+      "Aziza__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MjZhNGNhMGU5NTdlMjY4ggggggggggggggggggggggggggoxNzEzODEzOTY2fQ.pvEPu437RLxr5euEit3RBRTX4bQZ46OvAceJKj0b1Bo",
+      400,
+    ], // Invalid refreshToken format
+    [
+      400,
+      "Aziza__eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MjZhNGNhMGU5NTdlMjY4YjgzOTliOCIsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzEzODEzOTY2fQ.pvEPu437RLxr5euEit3RBRTX4bQZ46OvAceJKj0b1Bo",
+    ], // Expired refreshToken
+    [200, "validToken"], // Valid refreshToken
+  ])("should return %i when given %s", async (expected, refreshToken) => {
+    const res = await request(app).post("/auth/signup").send({ refreshToken });
+    expect(res.statusCode).toBe(expected);
+  });
+});
