@@ -1,6 +1,6 @@
-import userModel from "../../../../DB/model/User.model.ts";
-import cloudinary from "../../../Services/cloudinary.ts";
-import { compare, hash } from "../../../Services/hashAndCompare.ts";
+import userModel from "../../../../DB/model/User.model";
+import cloudinary from "../../../Services/cloudinary";
+import { compare, hash } from "../../../Services/hashAndCompare";
 
 export const profilePic = async (req: any, res: any, next: any) => {
   if (!req.file) {

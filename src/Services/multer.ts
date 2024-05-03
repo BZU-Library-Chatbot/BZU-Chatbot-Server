@@ -11,7 +11,7 @@ export const fileValidation = {
   file: ["application/pdf"],
 };
 
-function fileUpload(customPath = "public", customValidation = []) {
+const fileUpload: any = (customPath = "public", customValidation = []) => {
   const fullPath = path.join(__dirname, `../upload/${customPath}`);
   if (!fs.existsSync(fullPath)) {
     fs.mkdirSync(fullPath, { recursive: true });
@@ -51,5 +51,5 @@ function fileUpload(customPath = "public", customValidation = []) {
   const upload = multer({ fileFilter, storage });
 
   return upload;
-}
+};
 export default fileUpload;

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as userController from "./Controller/User.controller.ts";
-import { auth, roles } from "../../Middleware/auth.middleware.ts";
-import { asyncHandler } from "../../Services/errorHandling.ts";
-import fileUpload, { fileValidation } from "../../Services/multerCloudinary.ts";
-import validation from "../../Middleware/validation.ts";
-import * as validators from "./User.validation.ts";
+import * as userController from "./Controller/User.controller";
+import { auth, roles } from "../../Middleware/auth.middleware";
+import { asyncHandler } from "../../Services/errorHandling";
+import fileUpload, { fileValidation } from "../../Services/multerCloudinary";
+import validation from "../../Middleware/validation";
+import * as validators from "./User.validation";
 const router = Router();
 
 router.patch(

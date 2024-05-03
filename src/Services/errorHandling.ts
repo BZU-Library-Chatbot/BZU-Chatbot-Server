@@ -8,12 +8,8 @@ export const asyncHandler = (fn: any) => {
 
 export const globalErrorHandle = (err: any, req: any, res: any, next: any) => {
   if (err) {
-    if (process.env.MOOD == "DEV") {
-      return res
-        .status(err.cause || 500)
-        .json({ message: "catch error", stack: err.stack ? err.stack : err });
-    } else {
-      return res.status(err.cause || 500).json({ message: "catch error" });
-    }
+    return res
+      .status(err.cause || 500)
+      .json({ message: "catch error", stack: err.stack ? err.stack : err });
   }
 };

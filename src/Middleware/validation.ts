@@ -1,8 +1,8 @@
 import joi from "joi";
 import { Types } from "mongoose";
-import userModel from "../../DB/model/User.model.ts";
-import { roles } from "./auth.middleware.ts";
-import { verifyToken } from "../Services/generateAndVerifyToken.ts";
+import userModel from "../../DB/model/User.model";
+import { roles } from "./auth.middleware";
+import { verifyToken } from "../Services/generateAndVerifyToken";
 
 export const validationObjectId = (value: any, helper: any) => {
   if (Types.ObjectId.isValid(value)) {
@@ -14,7 +14,7 @@ export const validationObjectId = (value: any, helper: any) => {
 
 const validationRefreshToken = async (value: any) => {
   try {
-    const decoded = verifyToken(
+    const decoded: any = verifyToken(
       value.split(process.env.BEARERKEY)[1],
       process.env.REFRESH_TOKEN
     );
@@ -65,7 +65,7 @@ export const generalFields = {
   refreshToken: joi.string().custom(validationRefreshToken),
 };
 
-const validation = (schema) => {
+const validation = (schema: any) => {
   return (req: any, res: any, next: any) => {
     const inputsData = req.file
       ? { ...req.body, ...req.params, ...req.query, file: req.file }

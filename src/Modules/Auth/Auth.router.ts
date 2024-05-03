@@ -1,8 +1,8 @@
 import { Router } from "express";
-import * as AuthController from "./controller/Auth.controller.ts";
-import { asyncHandler } from "../../Services/errorHandling.ts";
-import validation from "../../Middleware/validation.ts";
-import * as validators from "./Auth.validation.ts";
+import * as AuthController from "./controller/Auth.controller";
+import { asyncHandler } from "../../Services/errorHandling";
+import validation from "../../Middleware/validation";
+import * as validators from "./Auth.validation";
 const router = Router({ caseSensitive: true });
 
 router.post(

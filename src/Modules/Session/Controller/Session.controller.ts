@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
-import sessionModel from "../../../../DB/model/Session.model.ts";
-import userModel from "../../../../DB/model/User.model.ts";
-import interactionModel from "../../../../DB/model/Interaction.model.ts";
+import sessionModel from "../../../../DB/model/Session.model";
+import userModel from "../../../../DB/model/User.model";
+import interactionModel from "../../../../DB/model/Interaction.model";
 
 export const sendMessage = async (req: any, res: any, next: any) => {
   const { message, sessionId } = req.body;
