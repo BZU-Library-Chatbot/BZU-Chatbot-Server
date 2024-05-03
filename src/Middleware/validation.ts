@@ -74,10 +74,10 @@ const validation = (schema: any) => {
       : { ...req.body, ...req.params, ...req.query };
     const validationResult = schema.validate(inputsData, { abortEarly: false });
     if (validationResult.error?.details) {
-      return res.json({
-        message: "validation error",
-        error: validationResult.error.details,
-      });
+      const error = new Error(validationResult.error.message) as any;
+      error.details = validationResult.error.details;
+      error.cause = 400;
+      return next(error);
     }
     return next();
   };

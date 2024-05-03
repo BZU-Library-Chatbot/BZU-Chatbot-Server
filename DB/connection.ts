@@ -1,9 +1,17 @@
 import mongoose from "mongoose";
-import userModel from "./model/User.model.ts";
-import { hash } from "../src/Services/hashAndCompare.ts";
+import userModel from "./model/User.model";
+import { hash } from "../src/Services/hashAndCompare";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
 const connectDB = async () => {
-  const dbUrl: string = process.env.DB_LOCAL || "";
+  let dbUrl: string;
+  if (process.env.MODE == "TEST") {
+    const mongoServer: MongoMemoryServer = await MongoMemoryServer.create();
+    dbUrl = mongoServer.getUri();
+  } else {
+    dbUrl = process.env.DB_LOCAL || "";
+  }
+
   return await mongoose
     .connect(dbUrl)
     .then(() => {
