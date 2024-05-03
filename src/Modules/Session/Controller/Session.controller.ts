@@ -31,7 +31,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
     const session = await sessionModel.create({ userId, title });
     req.body.session = session;
   }
-  const python = spawn("python", ["./chatbot.py", message]);
+  const python = spawn("python3", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
     response = botResponse
       .toString()
@@ -49,6 +49,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
       sessionId: req.body.session._id,
       userId,
     });
+    await interaction.populate("session");
     res.json(interaction);
   });
 };
@@ -70,14 +71,19 @@ export const getAll = async (req: any, res: any, next: any) => {
 export const getMessages = async (req: any, res: any, next: any) => {
   const { page = 1, size = 10 } = req.query;
   const { id } = req.params;
+  const session = await sessionModel.find({ _id: id, userId: req.user._id });
+  if (!session) {
+    const error = new Error("session not found") as any;
+    error.cause = 404;
+    return next(error);
+  }
   const messages = await interactionModel
-    .find({ sessionId: id, userId: req.user._id })
+    .find({ sessionId: id })
     .skip((page - 1) * size)
     .limit(size)
     .sort({ createdAt: -1 });
   const totalMessages = await interactionModel.countDocuments({
     sessionId: id,
-    userId: req.user._id,
   });
   const totalPages = Math.ceil(totalMessages / size);
   messages.reverse();
