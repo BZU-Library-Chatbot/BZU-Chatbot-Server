@@ -34,6 +34,25 @@ describe("POST /auth/signup", () => {
     }
   );
 });
+describe("POST /auth/login", () => {
+  it.each([
+    [400, "azizagmail.com", "password123"], // Invalid email format
+    [400, "mayarkarakra@gmail.com", "password123"], // Invalid credentials (email not registered)
+    [400, "azizakarakra7@gmail.com", ""], // Password is not provided
+    [400, "", "aziza0000000"], // Email is not provided
+    [400, "azizakarakra7@gmail.com", "password123"], // Registered but not confirmed
+    [200, process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD], // Valid input
+    [400, process.env.ADMIN_EMAIL, "password123765"], // Incorrect Password
+  ])(
+    "should return %i when given %s, %s",
+    async (expected, email, password) => {
+      const res = await request(app)
+        .post("/auth/login")
+        .send({ email, password });
+      expect(res.statusCode).toBe(expected);
+    }
+  );
+});
 
 describe("POST /auth/refreshToken", () => {
   it.each([
