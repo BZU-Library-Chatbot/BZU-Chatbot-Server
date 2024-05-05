@@ -47,7 +47,6 @@ const userSchema = new Schema(
     changePasswordTime: {
       type: Date,
     },
-    wishList: [{ type: Types.ObjectId, ref: "Product", required: true }],
   },
   {
     timestamps: true,
