@@ -641,7 +641,12 @@ export const login = async (req: any, res: any, next: any) => {
       );
       return res
         .status(200)
-        .json({ message: "success", token, refreshToken, user });
+        .json({
+          message: "success",
+          token,
+          refreshToken,
+          user: { ...user, password: undefined },
+        });
     }
   }
 };
