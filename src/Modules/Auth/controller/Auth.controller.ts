@@ -611,7 +611,7 @@ export const newConfirmEmail = async (req: any, res: any, next: any) => {
 
 export const login = async (req: any, res: any, next: any) => {
   const { email, password } = req.body;
-  const user = await userModel.findOne({ email });
+  const user = await userModel.findOne({ email, status: "Active" });
   if (!user) {
     const error = new Error("Not register account") as any;
     error.cause = 400;
@@ -639,14 +639,13 @@ export const login = async (req: any, res: any, next: any) => {
         { id: user._id, role: user.role },
         process.env.REFRESH_TOKEN
       );
-      return res
-        .status(200)
-        .json({
-          message: "success",
-          token,
-          refreshToken,
-          user: { ...user, password: undefined },
-        });
+      const userToReturn = { ...user._doc, password: null, forgetCode: null };
+      return res.status(200).json({
+        message: "success",
+        token,
+        refreshToken,
+        user: userToReturn,
+      });
     }
   }
 };
@@ -682,7 +681,6 @@ export const sendCode = async (req: any, res: any, next: any) => {
       "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
     4
   )();
-  //code = code();
   const html = `<p>Your Code is ${code}</p>`;
   const user = await userModel.findOneAndUpdate(
     { email },
