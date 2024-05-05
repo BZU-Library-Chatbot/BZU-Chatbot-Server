@@ -639,7 +639,14 @@ export const login = async (req: any, res: any, next: any) => {
         { id: user._id, role: user.role },
         process.env.REFRESH_TOKEN
       );
-      return res.status(200).json({ message: "success", token, refreshToken });
+      return res
+        .status(200)
+        .json({
+          message: "success",
+          token,
+          refreshToken,
+          user: { ...user, password: undefined },
+        });
     }
   }
 };
