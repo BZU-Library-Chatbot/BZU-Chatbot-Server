@@ -52,7 +52,6 @@ describe("POST /auth/login", () => {
       expect(res.statusCode).toBe(expected);
       if (expected == 200) {
         variables.refreshToken = res.body.refreshToken;
-        console.log("varrr:", variables);
       }
     }
   );
@@ -68,7 +67,6 @@ describe("POST /auth/login", () => {
     if (expected == 200) {
       refreshToken = process.env.BEARERKEY + variables.refreshToken;
     }
-    console.log("Refresh token", refreshToken);
     const res = await request(app).post("/auth/refresh").send({ refreshToken }); // sending refreshToken in the request body
     expect(res.statusCode).toBe(expected);
   });
