@@ -89,3 +89,21 @@ export const getMessages = async (req: any, res: any, next: any) => {
   messages.reverse();
   return res.json({ messages, totalPages, currentPage: page, totalMessages });
 };
+
+export const UpdateSessionTitle = async (req: any, res: any, next: any) => {
+  const { sessionId }: any = req.params;
+
+  const session = await sessionModel.findById(sessionId);
+  if (!session) {
+    const error = new Error("Session not found") as any;
+    error.cause = 400;
+    return next(error);
+  }
+
+  const { title }: any = req.body;
+  session.title = title;
+  session.updatedAt = new Date();
+  const sessionTitle = await session.save();
+
+  return res.status(200).json({ message: "Success", sessionTitle });
+};

@@ -700,13 +700,13 @@ export const forgetPassword = async (req: any, res: any, next: any) => {
   let { email, password, code, cPassword } = req.body;
   let user = await userModel.findOne({ email });
   if (!user) {
-    const error = new Error("not register account") as any;
+    const error = new Error("Not register account") as any;
     error.cause = 400;
 
     return next(error);
   }
   if (user.forgetCode != code || user.forgetCode == null) {
-    const error = new Error("not register account") as any;
+    const error = new Error("Invalid code") as any;
     error.cause = 400;
 
     return next(error);
