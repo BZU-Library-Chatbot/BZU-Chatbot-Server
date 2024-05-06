@@ -70,16 +70,8 @@ export const updatePassword = async (req: any, res: any, next: any) => {
   return res.json({ message: "success" });
 };
 
-export const shareProfile = async (req: any, res: any, next: any) => {
-  const user = await userModel
-    .findById(req.params.id)
-    .select("userName email ");
-
-  if (!user) {
-    return next(new Error("invalid profile id"));
-  } else {
-    return res.json({ message: "success", user });
-  }
+export const getProfile = async (req: any, res: any, next: any) => {
+  return res.json({ message: "success", user: req.user });
 };
 
 export const makeAdmin = async (req: any, res: any, next: any) => {

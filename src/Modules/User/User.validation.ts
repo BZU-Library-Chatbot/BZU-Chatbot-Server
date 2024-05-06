@@ -13,11 +13,7 @@ export const updatePassword = joi
   })
   .required();
 
-export const shareProfile = joi
-  .object({
-    id: generalFields.id,
-  })
-  .required();
+export const getProfile = joi.object().required();
 
 export const makeAdmin = joi.object({
   id: generalFields.id.required(),

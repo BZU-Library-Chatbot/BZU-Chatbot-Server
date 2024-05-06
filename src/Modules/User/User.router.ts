@@ -38,8 +38,9 @@ router.patch(
 );
 
 router.get(
-  "/:id/profile",
-  validation(validators.shareProfile),
-  asyncHandler(userController.shareProfile)
+  "/profile",
+  auth(),
+  validation(validators.getProfile),
+  asyncHandler(userController.getProfile)
 );
 export default router;
