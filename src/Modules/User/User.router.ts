@@ -8,9 +8,9 @@ import * as validators from "./User.validation";
 const router = Router();
 
 router.patch(
-  "/profilePic",
+  "/profile",
   auth(),
-  fileUpload(fileValidation.image).single("image"),
+  fileUpload(fileValidation.image).single("file"),
   validation(validators.profilePic),
   asyncHandler(userController.profilePic)
 );
@@ -38,8 +38,9 @@ router.patch(
 );
 
 router.get(
-  "/:id/profile",
-  validation(validators.shareProfile),
-  asyncHandler(userController.shareProfile)
+  "/profile",
+  auth(),
+  validation(validators.getProfile),
+  asyncHandler(userController.getProfile)
 );
 export default router;

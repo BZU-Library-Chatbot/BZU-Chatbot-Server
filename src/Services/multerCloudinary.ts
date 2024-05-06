@@ -7,7 +7,6 @@ export const fileValidation = {
 
 function fileUpload(customValidation: string[] = []): Multer {
   const storage = multer.diskStorage({});
-
   const fileFilter: any = (
     req: Request,
     file: Express.Multer.File,

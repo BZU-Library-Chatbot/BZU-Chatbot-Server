@@ -58,7 +58,11 @@ export const generalFields = {
     destination: joi.string().required(),
     filename: joi.string().required(),
     path: joi.string().required(),
-    size: joi.number().positive().required(),
+    size: joi
+      .number()
+      .positive()
+      .max(1024 * 1024 * 5)
+      .required(),
     dest: joi.string(),
   }),
   id: joi.string().custom(validationObjectId),

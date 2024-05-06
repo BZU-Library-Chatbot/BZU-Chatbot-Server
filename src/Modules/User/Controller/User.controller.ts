@@ -4,9 +4,8 @@ import { compare, hash } from "../../../Services/hashAndCompare";
 
 export const profilePic = async (req: any, res: any, next: any) => {
   if (!req.file) {
-    const error = new Error("please provide a file") as any;
+    const error = new Error("Please provide a file") as any;
     error.cause = 400;
-
     return next(error);
   }
   const { secure_url, public_id } = await cloudinary.uploader.upload(
@@ -15,13 +14,16 @@ export const profilePic = async (req: any, res: any, next: any) => {
   );
   const user = await userModel.findByIdAndUpdate(
     req.user._id,
-    { profilePic: { secure_url, public_id } },
+    { profilePic: { secure_url, public_id }, updatedAt: new Date() },
     { new: false }
   );
   if (user.profilePic) {
     await cloudinary.uploader.destroy(user.profilePic.public_id);
   }
-  return res.json({ message: "success" });
+  return res.json({
+    message: "success",
+    profilePic: { secure_url, public_id },
+  });
 };
 
 export const coverPic = async (req: any, res: any, next: any) => {
@@ -68,16 +70,8 @@ export const updatePassword = async (req: any, res: any, next: any) => {
   return res.json({ message: "success" });
 };
 
-export const shareProfile = async (req: any, res: any, next: any) => {
-  const user = await userModel
-    .findById(req.params.id)
-    .select("userName email ");
-
-  if (!user) {
-    return next(new Error("invalid profile id"));
-  } else {
-    return res.json({ message: "success", user });
-  }
+export const getProfile = async (req: any, res: any, next: any) => {
+  return res.json({ message: "success", user: req.user });
 };
 
 export const makeAdmin = async (req: any, res: any, next: any) => {
