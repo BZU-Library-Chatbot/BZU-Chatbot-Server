@@ -18,6 +18,6 @@ export const getMessages = joi.object({
 });
 
 export const UpdateSessionTitle = joi.object({
-  sessionId: generalFields.id.required(),
+  id: generalFields.id.required(),
   title: joi.string().min(2).max(50).required(),
 });

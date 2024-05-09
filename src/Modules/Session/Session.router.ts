@@ -29,8 +29,8 @@ router.get(
 );
 
 router.patch(
-  "/title/:sessionId",
-  optionalAuth(),
+  "/title/:id",
+  auth(),
   validation(validators.UpdateSessionTitle),
   asyncHandler(sessionController.UpdateSessionTitle)
 );

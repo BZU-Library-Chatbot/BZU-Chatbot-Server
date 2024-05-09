@@ -14,8 +14,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
     req.body.session = session;
     if (!session) {
       const error = new Error("session not found") as any;
-      error.cause = 404;
-
+      error.cause = 400;
       return next(error);
     }
 
@@ -74,7 +73,7 @@ export const getMessages = async (req: any, res: any, next: any) => {
   const session = await sessionModel.find({ _id: id, userId: req.user._id });
   if (!session) {
     const error = new Error("session not found") as any;
-    error.cause = 404;
+    error.cause = 400;
     return next(error);
   }
   const messages = await interactionModel
@@ -91,9 +90,10 @@ export const getMessages = async (req: any, res: any, next: any) => {
 };
 
 export const UpdateSessionTitle = async (req: any, res: any, next: any) => {
-  const { sessionId }: any = req.params;
+  const { id }: any = req.params;
+  const userId = req.user._id;
 
-  const session = await sessionModel.findById(sessionId);
+  const session = await sessionModel.findOne({ _id: id, userId });
   if (!session) {
     const error = new Error("Session not found") as any;
     error.cause = 400;
@@ -103,7 +103,9 @@ export const UpdateSessionTitle = async (req: any, res: any, next: any) => {
   const { title }: any = req.body;
   session.title = title;
   session.updatedAt = new Date();
-  const sessionTitle = await session.save();
+  const updatedSession = await session.save();
 
-  return res.status(200).json({ message: "Success", sessionTitle });
+  return res
+    .status(200)
+    .json({ message: "Success", sessionTitle: updatedSession.title });
 };
