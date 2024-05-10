@@ -58,3 +58,45 @@ describe("POST /session/message", () => {
     }
   );
 });
+
+describe("PATCH /session/title/${sessionId}", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "message" });
+    variables.sessionId = res.body.sessionId;
+  });
+
+  it.each([
+    // Test case 1: title without session id
+    [400, "New Title"],
+  ])("Should return %i, The title is %s", async (expected, title) => {
+    const res = await request(app).patch(`/session/title/abc`).send({ title });
+    expect(res.statusCode).toBe(expected);
+  });
+
+  it.each([
+    // Test case 2: title with session id
+    [200, "New Title"],
+    [400, ""],
+  ])("Should return %i, The title is %s", async (expected, title) => {
+    let { sessionId } = variables;
+    const res = await request(app)
+      .patch(`/session/title/${sessionId}`)
+      .set("Authorization", `${variables.token}`)
+      .send({ title });
+    expect(res.statusCode).toBe(expected);
+    if (expected === 200) {
+      const { body } = res;
+      const { sessionTitle } = body;
+      expect(sessionTitle).toBe(title);
+    }
+  });
+});

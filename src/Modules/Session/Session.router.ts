@@ -28,4 +28,11 @@ router.get(
   asyncHandler(sessionController.getMessages)
 );
 
+router.patch(
+  "/title/:id",
+  auth(),
+  validation(validators.UpdateSessionTitle),
+  asyncHandler(sessionController.UpdateSessionTitle)
+);
+
 export default router;

@@ -14,8 +14,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
     req.body.session = session;
     if (!session) {
       const error = new Error("session not found") as any;
-      error.cause = 404;
-
+      error.cause = 400;
       return next(error);
     }
 
@@ -74,7 +73,7 @@ export const getMessages = async (req: any, res: any, next: any) => {
   const session = await sessionModel.find({ _id: id, userId: req.user._id });
   if (!session) {
     const error = new Error("session not found") as any;
-    error.cause = 404;
+    error.cause = 400;
     return next(error);
   }
   const messages = await interactionModel
@@ -88,4 +87,25 @@ export const getMessages = async (req: any, res: any, next: any) => {
   const totalPages = Math.ceil(totalMessages / size);
   messages.reverse();
   return res.json({ messages, totalPages, currentPage: page, totalMessages });
+};
+
+export const UpdateSessionTitle = async (req: any, res: any, next: any) => {
+  const { id }: any = req.params;
+  const userId = req.user._id;
+
+  const session = await sessionModel.findOne({ _id: id, userId });
+  if (!session) {
+    const error = new Error("Session not found") as any;
+    error.cause = 400;
+    return next(error);
+  }
+
+  const { title }: any = req.body;
+  session.title = title;
+  session.updatedAt = new Date();
+  const updatedSession = await session.save();
+
+  return res
+    .status(200)
+    .json({ message: "Success", sessionTitle: updatedSession.title });
 };
