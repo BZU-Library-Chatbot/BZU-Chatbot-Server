@@ -3,6 +3,7 @@ import { globalErrorHandle } from "../Services/errorHandling";
 import AuthRouter from "./Auth/Auth.router";
 import UserRouter from "./User/User.router";
 import SessionRouter from "./Session/Session.router";
+import FeedbackRouter from "./Feedback/Feedback.router";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
@@ -18,6 +19,7 @@ const initApp = (app: any, express: any) => {
   app.use("/auth", AuthRouter);
   app.use("/user", UserRouter);
   app.use("/session", SessionRouter);
+  app.use("/feedback", FeedbackRouter);
   app.use("/*", (req: any, res: any, next: any) => {
     const error = new Error("page not found") as any;
     error.cause = 404;
