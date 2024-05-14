@@ -4,11 +4,18 @@ import app from "../../..";
 
 dotenv.config();
 
+afterAll(async () => {
+  app.close(() => {
+    console.log("Server disconnected");
+  });
+  await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
+});
+
 describe("POST /auth/login", () => {
   let variables: any = {};
   it.each([
     [400, "Aziza", "azizagmail.com", "password123", "password123"], // Invalid email format
-    [201, "Aziza", "azizakarakra7@gmail.com", "password123", "password123"], // Valid input
+    [201, "Aziza", "azizakarakra7@gmail.com", "Password123", "Password123"], // Valid input
     [
       400,
       "Existing User",
@@ -40,7 +47,7 @@ describe("POST /auth/login", () => {
     [400, "mayarkarakra@gmail.com", "password123"], // Invalid credentials (email not registered)
     [400, "azizakarakra7@gmail.com", ""], // Password is not provided
     [400, "", "aziza0000000"], // Email is not provided
-    [400, "azizakarakra7@gmail.com", "password123"], // Registered but not confirmed
+    [400, "azizakarakra7@gmail.com", "Password123"], // Registered but not confirmed
     [200, process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD], // Valid input
     [400, process.env.ADMIN_EMAIL, "password123765"], // Incorrect Password
   ])(

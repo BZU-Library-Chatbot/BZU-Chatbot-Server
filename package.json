@@ -5,7 +5,7 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
-    "test": "cross-env MODE=TEST NODE_OPTIONS=--experimental-vm-modules jest --testTimeout=500000",
+    "test": "cross-env MODE=TEST NODE_OPTIONS=--experimental-vm-modules jest --testTimeout=500000 --maxWorkers=1 --detectOpenHandles --forceExit --coverage",
     "dev": "tsx watch index.ts",
     "start": "tsx index.ts"
   },
