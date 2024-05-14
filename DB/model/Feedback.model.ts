@@ -4,11 +4,13 @@ const feedbackSchema = new Schema(
   {
     text: {
       type: String,
+      required: false,
     },
     rating: {
       type: Number,
       min: 1,
       max: 5,
+      required: true,
     },
     interactionId: {
       type: Types.ObjectId,
@@ -18,6 +20,8 @@ const feedbackSchema = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 

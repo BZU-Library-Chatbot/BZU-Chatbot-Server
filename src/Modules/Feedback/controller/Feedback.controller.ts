@@ -7,6 +7,7 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 
   const interaction = await interactionModel.findOne({
     _id: interactionId,
+    userId:req.user._id,
   });
 
   if (!interaction) {
