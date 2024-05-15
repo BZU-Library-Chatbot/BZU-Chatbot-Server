@@ -29,7 +29,6 @@ export const auth = (accessRoles = Object.values(roles)) => {
     if (!decoded) {
       const error = new Error("invalid token") as any;
       error.cause = 401;
-
       return next(error);
     }
     const user = await userModel.findById(decoded.id);

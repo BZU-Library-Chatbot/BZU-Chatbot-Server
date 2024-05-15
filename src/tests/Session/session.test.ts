@@ -4,6 +4,13 @@ import app from "../../..";
 
 dotenv.config();
 
+afterAll(async () => {
+  app.close(() => {
+    console.log("Server disconnected");
+  });
+    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
+});
+
 describe("POST /session/message", () => {
   let variables: any = {};
   beforeAll(async () => {

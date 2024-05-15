@@ -60,7 +60,7 @@ export const coverPic = async (req: any, res: any, next: any) => {
 export const updatePassword = async (req: any, res: any, next: any) => {
   const { oldPassword, newPassword } = req.body;
 
-  const user = await userModel.findById(req.user._id);
+  const user = req.user;
   const match = compare(oldPassword, user.password);
   if (!match) {
     return next(new Error("invalid password "));

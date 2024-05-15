@@ -49,7 +49,16 @@ export const generalFields = {
   email: joi
     .string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "edu"] } }),
-  password: joi.string().min(8).required(),
+  password: joi
+    .string()
+    .min(8)
+    .pattern(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/)
+    .messages({
+      "string.min": "Password must be at least 8 characters long",
+      "string.pattern.base":
+        "Password must contain at least one number, one lowercase letter, and one uppercase letter",
+      "any.required": "Password is required",
+    }),
   file: joi.object({
     fieldname: joi.string().required(),
     originalname: joi.string().required(),

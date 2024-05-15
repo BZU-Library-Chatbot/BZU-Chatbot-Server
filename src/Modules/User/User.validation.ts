@@ -7,7 +7,7 @@ export const profilePic = joi.object({
 
 export const updatePassword = joi
   .object({
-    oldPassword: generalFields.password,
+    oldPassword: joi.string().min(8).required(),
     newPassword: generalFields.password.invalid(joi.ref("oldPassword")),
     cPassword: joi.string().valid(joi.ref("newPassword")).required(),
   })
