@@ -8,29 +8,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
   const userId = req.user?._id;
   let response: any;
   let title = "This is a dummy session title for now.";
-
-  if (sessionId) {
-    const session = await sessionModel.findById(sessionId);
-    req.body.session = session;
-    if (!session) {
-      const error = new Error("session not found") as any;
-      error.cause = 400;
-      return next(error);
-    }
-
-    if (userId) {
-      if (session.userId && !session.userId == userId) {
-        return next(new Error("this user can not access this session"));
-      } else if (!session.userId) {
-        session.userId = userId;
-        await session.save();
-      }
-    }
-  } else {
-    const session = await sessionModel.create({ userId, title });
-    req.body.session = session;
-  }
-  const python = spawn("python3", ["./chatbot.py", message]);
+  const python = spawn("python", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
     response = botResponse
       .toString()
@@ -42,19 +20,36 @@ export const sendMessage = async (req: any, res: any, next: any) => {
   python.stderr.on("data", (err) => {});
 
   python.on("close", async (code) => {
-    const interaction = await interactionModel.create({
-      message,
-      response,
-      sessionId: req.body.session._id,
-      userId,
-    });
-    await interaction.populate("session");
-    res.json(interaction);
+    if (userId) {
+      if (sessionId) {
+        const session = await sessionModel.findOne({ _id: sessionId, userId });
+        req.body.session = session;
+        if (!session) {
+          const error = new Error("session not found") as any;
+          error.cause = 400;
+          return next(error);
+        }
+      } else {
+        const session = await sessionModel.create({ userId, title });
+        req.body.session = session;
+      }
+      const interaction = await interactionModel.create({
+        message,
+        response,
+        sessionId: req.body.session._id,
+        userId,
+      });
+      await interaction.populate("session");
+      res.json(interaction);
+    } else {
+      const interaction = { message, response, session: { title } };
+      res.json(interaction);
+    }
   });
 };
 
 export const getAll = async (req: any, res: any, next: any) => {
-  const { page = 1, size = 10, sort = "asc" } = req.query;
+  const { page = 1, size = 10 } = req.query;
   const sessions = await sessionModel
     .find({ userId: req.user._id })
     .skip((page - 1) * size)
