@@ -8,7 +8,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
   const userId = req.user?._id;
   let response: any;
   let title = "This is a dummy session title for now.";
-  const python = spawn("python3", ["./chatbot.py", message]);
+  const python = spawn("python", ["./chatbot.py", message]);
   python.stdout.on("data", (botResponse) => {
     response = botResponse
       .toString()
@@ -22,7 +22,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
   python.on("close", async (code) => {
     if (userId) {
       if (sessionId) {
-        const session = await sessionModel.find({ _id: sessionId, userId });
+        const session = await sessionModel.findOne({ _id: sessionId, userId });
         req.body.session = session;
         if (!session) {
           const error = new Error("session not found") as any;
