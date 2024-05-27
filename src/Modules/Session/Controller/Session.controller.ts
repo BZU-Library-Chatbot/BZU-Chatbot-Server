@@ -1,51 +1,53 @@
-import { spawn } from "child_process";
 import sessionModel from "../../../../DB/model/Session.model";
-import userModel from "../../../../DB/model/User.model";
 import interactionModel from "../../../../DB/model/Interaction.model";
+import axios from "axios";
 
 export const sendMessage = async (req: any, res: any, next: any) => {
   const { message, sessionId } = req.body;
   const userId = req.user?._id;
-  let response: any;
+
   let title = "This is a dummy session title for now.";
-  const python = spawn("python", ["./chatbot.py", message]);
-  python.stdout.on("data", (botResponse) => {
-    response = botResponse
-      .toString()
-      .replaceAll("\n", "")
-      .replaceAll("\r", "")
-      .replaceAll(/\\/g, "");
-  });
 
-  python.stderr.on("data", (err) => {});
+  const response: any = await axios.post(
+    `${process.env.CHATBOT_URL}/webhooks/rest/webhook`,
+    { message, sender: sessionId }
+  );
 
-  python.on("close", async (code) => {
-    if (userId) {
-      if (sessionId) {
-        const session = await sessionModel.findOne({ _id: sessionId, userId });
-        req.body.session = session;
-        if (!session) {
-          const error = new Error("session not found") as any;
-          error.cause = 400;
-          return next(error);
-        }
-      } else {
-        const session = await sessionModel.create({ userId, title });
-        req.body.session = session;
-      }
-      const interaction = await interactionModel.create({
-        message,
-        response,
-        sessionId: req.body.session._id,
-        userId,
-      });
-      await interaction.populate("session");
-      res.json(interaction);
-    } else {
-      const interaction = { message, response, session: { title } };
-      res.json(interaction);
+  if (response?.status != 200) {
+    return next(new Error("Chatbot is not responding"));
+  }
+  let text = "";
+  for(let i = 0; i < response.data.length; i++){
+    if(response.data[i].text){
+      text += response.data[i].text + "\n";
     }
-  });
+  }
+  // const { text } = response.data[0];
+  if (userId) {
+    if (sessionId) {
+      const session = await sessionModel.findOne({ _id: sessionId, userId });
+      req.body.session = session;
+      if (!session) {
+        const error = new Error("session not found") as any;
+        error.cause = 400;
+        return next(error);
+      }
+    } else {
+      const session = await sessionModel.create({ userId, title });
+      req.body.session = session;
+    }
+    const interaction = await interactionModel.create({
+      message,
+      response: text,
+      sessionId: req.body.session._id,
+      userId,
+    });
+    await interaction.populate("session");
+    res.json(interaction);
+  } else {
+    const interaction = { message, response: text, session: { title } };
+    res.json(interaction);
+  }
 };
 
 export const getAll = async (req: any, res: any, next: any) => {
