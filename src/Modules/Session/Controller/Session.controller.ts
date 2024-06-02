@@ -17,12 +17,11 @@ export const sendMessage = async (req: any, res: any, next: any) => {
     return next(new Error("Chatbot is not responding"));
   }
   let text = "";
-  for(let i = 0; i < response.data.length; i++){
-    if(response.data[i].text){
+  for (let i = 0; i < response.data.length; i++) {
+    if (response.data[i].text) {
       text += response.data[i].text + "\n";
     }
   }
-  // const { text } = response.data[0];
   if (userId) {
     if (sessionId) {
       const session = await sessionModel.findOne({ _id: sessionId, userId });
