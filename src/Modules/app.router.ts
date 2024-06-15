@@ -15,6 +15,9 @@ const initApp = (app: any, express: any) => {
   app.use(cors());
   connectDB();
   app.use(express.json());
+  app.get("/", (req: any, res: any) => {
+    return res.send("Welcome to the API Of BZU Library Chatbot");
+  });
   app.use("/upload", express.static(fullPath));
   app.use("/auth", AuthRouter);
   app.use("/user", UserRouter);

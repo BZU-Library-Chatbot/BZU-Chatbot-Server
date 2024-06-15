@@ -5,15 +5,20 @@ import request from "supertest";
 dotenv.config();
 
 afterAll(async () => {
-    app.close(() => {
-        console.log("Server disconnected");
-    });
-    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
+  app.close(() => {
+    console.log("User Tests Completed");
+  });
+  await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
 });
 
 describe("Patch /user/updatePassword", () => {
   let variables: any = {};
   beforeAll(async () => {
+    const r = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+
     const res = await request(app).post("/auth/login").send({
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,

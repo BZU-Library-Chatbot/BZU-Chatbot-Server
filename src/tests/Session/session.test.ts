@@ -6,14 +6,18 @@ dotenv.config();
 
 afterAll(async () => {
   app.close(() => {
-    console.log("Server disconnected");
+    console.log("Session Tests Completed");
   });
-    await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
+  await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
 });
 
 describe("POST /session/message", () => {
   let variables: any = {};
   beforeAll(async () => {
+    const r = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
     const res = await request(app).post("/auth/login").send({
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,
