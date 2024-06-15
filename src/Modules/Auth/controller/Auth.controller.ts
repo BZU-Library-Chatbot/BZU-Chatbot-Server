@@ -719,3 +719,22 @@ export const forgetPassword = async (req: any, res: any, next: any) => {
     .status(200)
     .json({ message: "Password updated successfully", user });
 };
+
+export const getAllAdmins = async (req: any, res: any, next: any) => {
+  const { page, limit, active } = req.query;
+  const query: any = {};
+  if (active) query.status = active;
+  const admins = await userModel
+    .find(query)
+    .limit(limit)
+    .skip((page - 1) * limit);
+  const totalAdmins = await userModel.countDocuments(query);
+  const totalPages = Math.ceil(totalAdmins / limit);
+  return res.status(200).json({
+    message: "success",
+    admins,
+    totalPages,
+    totalAdmins,
+    currentPage: Number(page),
+  });
+};

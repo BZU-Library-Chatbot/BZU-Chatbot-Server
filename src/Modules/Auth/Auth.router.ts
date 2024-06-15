@@ -3,6 +3,7 @@ import * as AuthController from "./controller/Auth.controller";
 import { asyncHandler } from "../../Services/errorHandling";
 import validation from "../../Middleware/validation";
 import * as validators from "./Auth.validation";
+import { auth, roles } from "../../Middleware/auth.middleware";
 const router = Router({ caseSensitive: true });
 
 router.post(
@@ -46,5 +47,7 @@ router.post(
   validation(validators.refresh),
   asyncHandler(AuthController.refreshToken)
 );
+
+router.get("/admin",auth([roles.Admin]) , validation(validators.admin), asyncHandler(AuthController.getAllAdmins));
 
 export default router;
