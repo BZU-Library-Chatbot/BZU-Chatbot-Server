@@ -47,3 +47,14 @@ export const confirmEmail = joi
     token: joi.string().required(),
   })
   .required();
+
+  export const createAdmin = joi
+  .object({
+    userName: joi.string().min(3).max(40).required(),
+    email: generalFields.email.required(),
+    password: generalFields.password.required(),
+    cPassword: joi.any().valid(joi.ref("password")).required().messages({
+      "any.only": "Does not match password",
+    }),
+  })
+  .required();
