@@ -96,3 +96,64 @@ describe("PATCH /auth/sendCode", () => {
     }
   });
 });
+
+describe("GET /admin", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    const r = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    const res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = res.body.token;
+  });
+
+  it.each([
+    // Valid inputs
+    [200, 10, 1, true],
+    [200, 10, 1, false],
+    [200, 10, 2, null],
+    // Invalid inputs
+    [400, 10, 0, true],
+    [400, 0, 1, true],
+    [400, 0, 0, true],
+    [400, -1, 1, true],
+    [400, 10, -1, true],
+    [400, "invalid", 1, true],
+    [400, 10, "invalid", true],
+    // Edge cases
+    [200, 1, 1, true],
+    [200, 100, 1, true],
+    [200, 10, 1, false],
+  ])(
+    "should return %i when given limit: %i, page: %i, active: %s",
+    async (expected, limit, page, active) => {
+      const token: any = process.env.BEARERKEY + variables.token;
+      let res;
+      if (active) {
+        res = await request(app)
+          .get("/auth/admin")
+          .set("Authorization", `${token}`)
+          .query({ limit, page, active });
+      } else {
+        res = await request(app)
+          .get("/auth/admin")
+          .set("Authorization", `${token}`)
+          .query({ limit, page });
+      }
+      expect(res.statusCode).toBe(expected);
+
+      if (expected === 200) {
+        expect(res.body).toHaveProperty("message", "success");
+        expect(res.body).toHaveProperty("admins");
+        expect(Array.isArray(res.body.admins)).toBe(true);
+        expect(res.body).toHaveProperty("totalPages");
+        expect(res.body).toHaveProperty("totalAdmins");
+        expect(res.body).toHaveProperty("currentPage", page);
+      }
+    }
+  );
+});

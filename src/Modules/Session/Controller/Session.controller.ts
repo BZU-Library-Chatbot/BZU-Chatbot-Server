@@ -60,7 +60,12 @@ export const getAll = async (req: any, res: any, next: any) => {
     userId: req.user._id,
   });
   const totalPages = Math.ceil((await totalSessions) / size);
-  return res.json({ sessions, totalPages, currentPage: page, totalSessions });
+  return res.json({
+    sessions,
+    totalPages,
+    currentPage: Number(page),
+    totalSessions,
+  });
 };
 
 export const getMessages = async (req: any, res: any, next: any) => {
