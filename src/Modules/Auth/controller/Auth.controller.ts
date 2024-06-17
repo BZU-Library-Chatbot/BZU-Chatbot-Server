@@ -735,6 +735,7 @@ export const createAdmin = async (req: any, res: any, next: any) => {
     userName,
     email,
     password: HashPassword,
+    role: 'Admin'
   });
 
   return res.status(201).json({ message: "success", createAdmin});
