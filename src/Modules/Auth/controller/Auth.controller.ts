@@ -735,9 +735,28 @@ export const createAdmin = async (req: any, res: any, next: any) => {
     userName,
     email,
     password: HashPassword,
-    role: 'Admin',
-    confirmEmail:true
+    role: "Admin",
+    confirmEmail: true,
   });
 
-  return res.status(201).json({ message: "success", createAdmin});
+  return res.status(201).json({ message: "success", createAdmin });
+};
+
+export const getAllAdmins = async (req: any, res: any, next: any) => {
+  const { page, limit, active } = req.query;
+  const query: any = {};
+  if (active) query.status = active;
+  const admins = await userModel
+    .find(query)
+    .limit(limit)
+    .skip((page - 1) * limit);
+  const totalAdmins = await userModel.countDocuments(query);
+  const totalPages = Math.ceil(totalAdmins / limit);
+  return res.status(200).json({
+    message: "success",
+    admins,
+    totalPages,
+    totalAdmins,
+    currentPage: Number(page),
+  });
 };

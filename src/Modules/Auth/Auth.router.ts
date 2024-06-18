@@ -48,6 +48,13 @@ router.post(
   asyncHandler(AuthController.refreshToken)
 );
 
+router.get(
+  "/admin",
+  auth([roles.Admin]),
+  validation(validators.getAllAdmins),
+  asyncHandler(AuthController.getAllAdmins)
+);
+
 router.post(
   "/createAdmin",
   auth([roles.Admin]),
