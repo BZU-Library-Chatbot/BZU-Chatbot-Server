@@ -87,7 +87,7 @@ export const getMessages = async (req: any, res: any, next: any) => {
   });
   const totalPages = Math.ceil(totalMessages / size);
   messages.reverse();
-  return res.json({ messages, totalPages, currentPage: page, totalMessages });
+  return res.json({ messages, totalPages, currentPage: Number(page), totalMessages });
 };
 
 export const UpdateSessionTitle = async (req: any, res: any, next: any) => {
