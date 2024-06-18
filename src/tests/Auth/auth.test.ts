@@ -158,4 +158,74 @@ describe("GET /admin", () => {
   );
 });
 
+describe("PATCH /auth/active/:adminId", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+    variables.adminId = res.body.user._id;
+  });
 
+  it(
+    "", async ()=>{
+      await request(app)
+        .patch(`/auth/active/${variables.adminId}`)
+        .expect(400);
+    }
+  );
+
+  it.each([
+    [200,variables.adminId], 
+    [400, "987654324567890f"],
+    "should return status %i for user: %s, email: %s",
+    async (expected:any,adminId:any) => {
+      const response =  await request(app)
+      .patch(`/auth/active/${variables.adminId}`)
+      .expect(expected);
+      if (expected == 200) {
+        expect(response.body.message).toEqual("success");
+      } else {
+        expect(response.body.message).toEqual("catch error");
+      }
+    }
+ ] );
+});
+
+describe("PATCH /auth/deActive/:adminId", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+    variables.adminId = res.body.user._id;
+  });
+
+  it(
+    "", async ()=>{
+      await request(app)
+        .patch(`/auth/deActive/${variables.adminId}`)
+        .expect(400);
+    }
+  );
+
+  it.each([
+    [200,variables.adminId], 
+    [400, "987654324567890f"],
+    "should return status %i for user: %s, email: %s",
+    async (expected:any,adminId:any) => {
+      const response =  await request(app)
+      .patch(`/auth/deActive/${variables.adminId}`)
+      .expect(expected);
+      if (expected == 200) {
+        expect(response.body.message).toEqual("success");
+      } else {
+        expect(response.body.message).toEqual("catch error");
+      }
+    }
+ ] );
+});
