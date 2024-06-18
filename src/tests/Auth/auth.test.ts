@@ -96,3 +96,33 @@ describe("PATCH /auth/sendCode", () => {
     }
   });
 });
+
+describe("POST /auth/createAdmin", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token });
+
+    it.each([
+      [201, "admin1", "admin1@bzu.com", "Admin1_password123","Admin1_password123"], // Valid input
+      [400, "admin2", "admin1@bzu.com", "pWord123@#", "pWord123@#"], // Duplicate email
+      [400, "admin3", "admin3@gmail.com", "",""], //Empty password
+      [400, "admin3", "", "Admin1_password123","Admin1_password123"], //Empty email address
+    ])("should return status %i for user: %s, email: %s", async (expected, userName, email, password,cPassword) => {
+      const response = await request(app)
+        .post("/auth/createAdmin")
+        .set("Authorization", `${variables.token}`)
+        .send({ userName, email, password, cPassword})
+        .expect(expected);
+  
+        if (expected == 201) {
+          expect(response.body.message).toEqual("success");
+        } else {
+          expect(response.body.message).toEqual("catch error");
+        }
+    
+      });
+  });
