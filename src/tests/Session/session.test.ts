@@ -111,3 +111,102 @@ describe("PATCH /session/title/${sessionId}", () => {
     }
   });
 });
+
+describe("GET /session && GET /session/${sessionId}", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res: any = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "message" });
+    variables.sessionId = res.body.sessionId;
+
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "hi" });
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "hi" });
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "hi" });
+    res = await request(app)
+      .post("/session/message")
+      .set("Authorization", `${variables.token}`)
+      .send({ message: "hi" });
+    variables.sessionId = res.body.sessionId;
+    for (let i = 0; i < 5; i++) {
+      await request(app)
+        .post("/session/message")
+        .set("Authorization", `${variables.token}`)
+        .send({ message: `hi ${i}` });
+    }
+  });
+  it("Should return all sessions with status 200", async () => {
+    const res = await request(app)
+      .get("/session")
+      .set("Authorization", `${variables.token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("sessions");
+    expect(Array.isArray(res.body.sessions)).toBe(true);
+    expect(res.body).toHaveProperty("totalPages");
+    expect(res.body).toHaveProperty("currentPage", 1);
+    expect(res.body).toHaveProperty("totalSessions");
+  });
+
+  it("Should return messages of a specific session with status 200", async () => {
+    const res = await request(app)
+      .get(`/session/${variables.sessionId}`)
+      .set("Authorization", `${variables.token}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("messages");
+    expect(Array.isArray(res.body.messages)).toBe(true);
+    expect(res.body).toHaveProperty("totalPages");
+    expect(res.body).toHaveProperty("currentPage", 1);
+    expect(res.body).toHaveProperty("totalMessages");
+    expect(res.body.messages.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("Should return 400 if sessionId does not exist", async () => {
+    const res = await request(app)
+      .get(`/session/invalidSessionId`)
+      .set("Authorization", `${variables.token}`);
+    expect(res.statusCode).toBe(400);
+  });
+
+  it("Should return paginated sessions", async () => {
+    const res = await request(app)
+      .get("/session")
+      .set("Authorization", `${variables.token}`)
+      .query({ page: 1, size: 2 });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("sessions");
+    expect(Array.isArray(res.body.sessions)).toBe(true);
+    expect(res.body.sessions.length).toBeLessThanOrEqual(2);
+    expect(res.body).toHaveProperty("totalPages");
+    expect(res.body).toHaveProperty("currentPage", 1);
+    expect(res.body).toHaveProperty("totalSessions");
+  });
+
+  it("Should return paginated messages of a specific session", async () => {
+    const res = await request(app)
+      .get(`/session/${variables.sessionId}`)
+      .set("Authorization", `${variables.token}`)
+      .query({ page: 1, size: 2 });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("messages");
+    expect(Array.isArray(res.body.messages)).toBe(true);
+    expect(res.body.messages.length).toBeLessThanOrEqual(2);
+    expect(res.body).toHaveProperty("totalPages");
+    expect(res.body).toHaveProperty("currentPage", 1);
+    expect(res.body).toHaveProperty("totalMessages");
+  });
+});

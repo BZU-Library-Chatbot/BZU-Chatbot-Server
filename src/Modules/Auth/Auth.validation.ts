@@ -48,6 +48,14 @@ export const confirmEmail = joi
   })
   .required();
 
+export const admin = joi
+  .object({
+    page: joi.number().min(1).default(1),
+    limit: joi.number().min(1).default(10),
+    active: joi.boolean(),
+  })
+  .required();
+
   export const createAdmin = joi
   .object({
     userName: joi.string().min(3).max(40).required(),

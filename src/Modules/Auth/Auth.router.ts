@@ -48,11 +48,4 @@ router.post(
   asyncHandler(AuthController.refreshToken)
 );
 
-router.post(
-  "/createAdmin",
-  auth([roles.Admin]),
-  validation(validators.createAdmin),
-  asyncHandler(AuthController.createAdmin)
-);
-
 export default router;
