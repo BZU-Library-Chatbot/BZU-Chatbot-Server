@@ -55,3 +55,15 @@ export const admin = joi
     active: joi.boolean(),
   })
   .required();
+
+  export const activeAdmin = joi.object({
+    adminId:generalFields.id.required(),
+  })
+  .required();
+
+  export const deActiveAdmin = joi.object({
+    adminId:generalFields.id.required(),
+  })
+  .required();
+
+

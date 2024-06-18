@@ -49,5 +49,7 @@ router.post(
 );
 
 router.get("/admin",auth([roles.Admin]) , validation(validators.admin), asyncHandler(AuthController.getAllAdmins));
+router.patch('/active/admin/:adminId', auth([roles.Admin]), validation(validators.activeAdmin), asyncHandler(AuthController.active));
+router.patch('/deActive/admin/:adminId', auth([roles.Admin]), validation(validators.deActiveAdmin), asyncHandler(AuthController.deActive))
 
 export default router;
