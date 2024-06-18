@@ -157,3 +157,103 @@ describe("GET /admin", () => {
     }
   );
 });
+
+describe("POST /auth/createAdmin", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+  });
+
+  it.each([
+    [
+      201,
+      "admin1",
+      "admin1@bzu.com",
+      "Admin1_password123",
+      "Admin1_password123",
+    ], // Valid input
+    [400, "admin2", "admin1@bzu.com", "pWord123@#", "pWord123@#"], // Duplicate email
+    [400, "admin3", "admin3@gmail.com", "", ""], //Empty password
+    [400, "admin3", "", "Admin1_password123", "Admin1_password123"], //Empty email address
+  ])(
+    "should return status %i for user: %s, email: %s",
+    async (expected, userName, email, password, cPassword) => {
+      const response = await request(app)
+        .post("/auth/createAdmin")
+        .set("Authorization", `${variables.token}`)
+        .send({ userName, email, password, cPassword })
+        .expect(expected);
+
+      if (expected == 201) {
+        expect(response.body.message).toEqual("success");
+      } else {
+        expect(response.body.message).toEqual("catch error");
+      }
+    }
+  );
+});
+
+describe("GET /admin", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    const r = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    const res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = res.body.token;
+  });
+
+  it.each([
+    // Valid inputs
+    [200, 10, 1, true],
+    [200, 10, 1, false],
+    [200, 10, 2, null],
+    // Invalid inputs
+    [400, 10, 0, true],
+    [400, 0, 1, true],
+    [400, 0, 0, true],
+    [400, -1, 1, true],
+    [400, 10, -1, true],
+    [400, "invalid", 1, true],
+    [400, 10, "invalid", true],
+    // Edge cases
+    [200, 1, 1, true],
+    [200, 100, 1, true],
+    [200, 10, 1, false],
+  ])(
+    "should return %i when given limit: %i, page: %i, active: %s",
+    async (expected, limit, page, active) => {
+      const token: any = process.env.BEARERKEY + variables.token;
+      let res;
+      if (active) {
+        res = await request(app)
+          .get("/auth/admin")
+          .set("Authorization", `${token}`)
+          .query({ limit, page, active });
+      } else {
+        res = await request(app)
+          .get("/auth/admin")
+          .set("Authorization", `${token}`)
+          .query({ limit, page });
+      }
+      expect(res.statusCode).toBe(expected);
+
+      if (expected === 200) {
+        expect(res.body).toHaveProperty("message", "success");
+        expect(res.body).toHaveProperty("admins");
+        expect(Array.isArray(res.body.admins)).toBe(true);
+        expect(res.body).toHaveProperty("totalPages");
+        expect(res.body).toHaveProperty("totalAdmins");
+        expect(res.body).toHaveProperty("currentPage", page);
+      }
+    }
+  );
+});
