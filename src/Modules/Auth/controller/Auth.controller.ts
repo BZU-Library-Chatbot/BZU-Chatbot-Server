@@ -744,7 +744,7 @@ export const createAdmin = async (req: any, res: any, next: any) => {
 
 export const getAllAdmins = async (req: any, res: any, next: any) => {
   const { page, limit, active } = req.query;
-  const query: any = {};
+  const query: any = {_id: { $ne: req.user._id }, role: "Admin"};
   if (active) query.status = active;
   const admins = await userModel
     .find(query)
@@ -752,6 +752,11 @@ export const getAllAdmins = async (req: any, res: any, next: any) => {
     .skip((page - 1) * limit);
   const totalAdmins = await userModel.countDocuments(query);
   const totalPages = Math.ceil(totalAdmins / limit);
+  // make the code, password = null
+  admins.forEach((admin: any) => {  
+    admin.password = null;
+    admin.forgetCode = null;
+  });
   return res.status(200).json({
     message: "success",
     admins,
