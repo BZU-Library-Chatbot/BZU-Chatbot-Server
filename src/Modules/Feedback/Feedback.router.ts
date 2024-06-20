@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as feedbackController from "./controller/Feedback.controller";
-import { auth } from "../../Middleware/auth.middleware";
+import { auth, roles } from "../../Middleware/auth.middleware";
 import { asyncHandler } from "../../Services/errorHandling";
 import validation from "../../Middleware/validation";
 import * as validators from "./Feedback.validation";
@@ -11,5 +11,12 @@ router.post(
   auth(),
   validation(validators.createFeedback),
   asyncHandler(feedbackController.createFeedback)
+);
+
+router.delete(
+  "/:feedbackId",
+  auth([roles.Admin]),
+  validation(validators.deleteFeedback),
+  asyncHandler(feedbackController.deleteFeedback)
 );
 export default router;

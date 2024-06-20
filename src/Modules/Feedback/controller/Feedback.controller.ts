@@ -24,3 +24,21 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 
   return res.status(201).json({ message: "success", feedback });
 };
+
+export const deleteFeedback = async (req: any, res: any, next: any) => {
+  const { feedbackId } = req.params;
+
+  const feedback = await feedbackModel.findOne({
+    _id: feedbackId,
+  });
+
+  if (!feedback) {
+    const error = new Error("Feedback not found") as any;
+    error.cause = 404;
+    return next(error);
+  }
+
+  await feedbackModel.deleteOne({ _id: feedbackId });
+
+  return res.status(200).json({ message: "Feedback deleted successfully" });
+};
