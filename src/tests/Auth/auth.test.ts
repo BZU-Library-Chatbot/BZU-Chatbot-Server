@@ -266,31 +266,35 @@ describe("DELETE /feedback/:feedbackId", () => {
       password: process.env.ADMIN_PASSWORD,
     });
     variables.token = process.env.BEARERKEY + res.body.token;
+
+    res = await request(app).post("/session/message").set("Authorization", `${variables.token}`).send({
+      message : "Hi there !"
+    });
+    
+    variables.interactionId = res.body._id;
+    
+    res = await request(app).post(`/feedback/${variables.interactionId}`).set("Authorization", `${variables.token}`).send({
+      text:"nice",
+      rating:3
+    });
+ 
     variables.feedbackId = res.body.feedback._id;
   });
 
-  it(
-    "", async ()=>{
-      await request(app)
-        .delete(`/feedback/${variables.feedbackId}`)
-        .expect(400);
-    }
-  );
+  it("should return 400 if feedback does not exist", async () => {
+    await request(app)
+      .delete(`/feedback/98765ml24567890f`)
+      .set("Authorization", `${variables.token}`)
+      .expect(400);
+  });
 
-  it.each([
-    [200,variables.feedbackId], 
-    [400, "987654324567890f"],
-    "should return status %i for user: %s, email: %s",
-    async (expected:any,feedbackId:any) => {
-      const response =  await request(app)
+  it("should delete feedback and return status 200", async () => {
+    const response = await request(app)
       .delete(`/feedback/${variables.feedbackId}`)
-      .expect(expected);
-      if (expected == 200) {
-        expect(response.body.message).toEqual("success");
-      } else {
-        expect(response.body.message).toEqual("catch error");
-      }
-    }
- ] );
+      .set("Authorization", `${variables.token}`)
+      .expect(200);
+    
+    expect(response.body.message).toEqual("Feedback deleted successfully");
+  });
 });
 

@@ -28,7 +28,7 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 export const deleteFeedback = async (req: any, res: any, next: any) => {
   const { feedbackId } = req.params;
 
-  const feedback = await feedbackModel.findOne({
+  const feedback = await feedbackModel.deleteOne({
     _id: feedbackId,
   });
 
@@ -37,8 +37,6 @@ export const deleteFeedback = async (req: any, res: any, next: any) => {
     error.cause = 404;
     return next(error);
   }
-
-  await feedbackModel.deleteOne({ _id: feedbackId });
 
   return res.status(200).json({ message: "Feedback deleted successfully" });
 };
