@@ -48,6 +48,8 @@ router.post(
   asyncHandler(AuthController.refreshToken)
 );
 
+router.patch('/activate/:adminId', auth([roles.Admin]), validation(validators.activate), asyncHandler(AuthController.activate));
+router.patch('/deActivate/:adminId', auth([roles.Admin]), validation(validators.deActivate), asyncHandler(AuthController.deActivate))
 router.get(
   "/admin",
   auth([roles.Admin]),

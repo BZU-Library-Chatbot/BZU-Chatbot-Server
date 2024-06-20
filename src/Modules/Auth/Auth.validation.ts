@@ -56,6 +56,17 @@ export const getAllAdmins = joi
   })
   .required();
 
+  export const activate = joi.object({
+    adminId:generalFields.id.required(),
+  })
+  .required();
+
+  export const deActivate = joi.object({
+    adminId:generalFields.id.required(),
+  })
+  .required();
+
+
   export const createAdmin = joi
   .object({
     userName: joi.string().min(3).max(40).required(),
