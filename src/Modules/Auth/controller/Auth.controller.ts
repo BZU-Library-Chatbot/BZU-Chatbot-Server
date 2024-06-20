@@ -760,3 +760,27 @@ export const getAllAdmins = async (req: any, res: any, next: any) => {
     currentPage: Number(page),
   });
 };
+
+export const activate = async (req: any, res: any, next: any) => {
+  const {adminId} = req.params;
+  const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Active'});
+  if(!admin){
+    const error = new Error("No such admin") as any;
+    error.cause = 400;
+
+    return next(error);
+  }  
+  return res.status(200).json({message:"success",admin});
+}
+
+export const deActivate = async (req: any, res: any, next: any) => {
+  const {adminId} = req.params;
+  const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Not Active'});
+  if(!admin){
+    const error = new Error("No such admin") as any;
+    error.cause = 400;
+
+    return next(error);
+  }
+  return res.status(200).json({message:"success",admin});
+}
