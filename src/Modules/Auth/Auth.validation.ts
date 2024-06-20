@@ -48,7 +48,7 @@ export const confirmEmail = joi
   })
   .required();
 
-export const admin = joi
+export const getAllAdmins = joi
   .object({
     page: joi.number().min(1).default(1),
     limit: joi.number().min(1).default(10),
@@ -67,3 +67,13 @@ export const admin = joi
   .required();
 
 
+  export const createAdmin = joi
+  .object({
+    userName: joi.string().min(3).max(40).required(),
+    email: generalFields.email.required(),
+    password: generalFields.password.required(),
+    cPassword: joi.any().valid(joi.ref("password")).required().messages({
+      "any.only": "Does not match password",
+    }),
+  })
+  .required();

@@ -48,8 +48,20 @@ router.post(
   asyncHandler(AuthController.refreshToken)
 );
 
-router.get("/admin",auth([roles.Admin]) , validation(validators.admin), asyncHandler(AuthController.getAllAdmins));
 router.patch('/activate/:adminId', auth([roles.Admin]), validation(validators.activate), asyncHandler(AuthController.activate));
 router.patch('/deActivate/:adminId', auth([roles.Admin]), validation(validators.deActivate), asyncHandler(AuthController.deActivate))
+router.get(
+  "/admin",
+  auth([roles.Admin]),
+  validation(validators.getAllAdmins),
+  asyncHandler(AuthController.getAllAdmins)
+);
+
+router.post(
+  "/createAdmin",
+  auth([roles.Admin]),
+  validation(validators.createAdmin),
+  asyncHandler(AuthController.createAdmin)
+);
 
 export default router;

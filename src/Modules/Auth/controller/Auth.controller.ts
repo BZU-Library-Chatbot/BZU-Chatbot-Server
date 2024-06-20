@@ -720,6 +720,28 @@ export const forgetPassword = async (req: any, res: any, next: any) => {
     .json({ message: "Password updated successfully", user });
 };
 
+export const createAdmin = async (req: any, res: any, next: any) => {
+  const { userName, email, password } = req.body;
+
+  const existingAdmin = await userModel.findOne({ email });
+  if (existingAdmin) {
+    const error = new Error("duplicated email") as any;
+    error.cause = 400;
+    return next(error);
+  }
+
+  const HashPassword = hash(password);
+  const createAdmin = await userModel.create({
+    userName,
+    email,
+    password: HashPassword,
+    role: "Admin",
+    confirmEmail: true,
+  });
+
+  return res.status(201).json({ message: "success", createAdmin });
+};
+
 export const getAllAdmins = async (req: any, res: any, next: any) => {
   const { page, limit, active } = req.query;
   const query: any = {};
