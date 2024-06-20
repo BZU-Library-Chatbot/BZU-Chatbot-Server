@@ -158,7 +158,7 @@ describe("GET /admin", () => {
   );
 });
 
-describe("PATCH /auth/active/:adminId", () => {
+describe("PATCH /auth/activate/:adminId", () => {
   let variables: any = {};
   beforeAll(async () => {
     let res = await request(app).post("/auth/login").send({
@@ -172,7 +172,7 @@ describe("PATCH /auth/active/:adminId", () => {
   it(
     "", async ()=>{
       await request(app)
-        .patch(`/auth/active/${variables.adminId}`)
+        .patch(`/auth/activate/${variables.adminId}`)
         .expect(400);
     }
   );
@@ -194,7 +194,7 @@ describe("PATCH /auth/active/:adminId", () => {
  ] );
 });
 
-describe("PATCH /auth/deActive/:adminId", () => {
+describe("PATCH /auth/deActivate/:adminId", () => {
   let variables: any = {};
   beforeAll(async () => {
     let res = await request(app).post("/auth/login").send({
@@ -208,7 +208,7 @@ describe("PATCH /auth/deActive/:adminId", () => {
   it(
     "", async ()=>{
       await request(app)
-        .patch(`/auth/deActive/${variables.adminId}`)
+        .patch(`/auth/deActivate/${variables.adminId}`)
         .expect(400);
     }
   );
@@ -219,7 +219,7 @@ describe("PATCH /auth/deActive/:adminId", () => {
     "should return status %i for user: %s, email: %s",
     async (expected:any,adminId:any) => {
       const response =  await request(app)
-      .patch(`/auth/deActive/${variables.adminId}`)
+      .patch(`/auth/deActivate/${variables.adminId}`)
       .expect(expected);
       if (expected == 200) {
         expect(response.body.message).toEqual("success");
