@@ -748,7 +748,7 @@ export const activate = async (req: any, res: any, next: any) => {
 
     return next(error);
   }  
-  return res.status(200).json({message:"success"});
+  return res.status(200).json({message:"success",admin});
 }
 
 export const deActivate = async (req: any, res: any, next: any) => {
@@ -760,5 +760,5 @@ export const deActivate = async (req: any, res: any, next: any) => {
 
     return next(error);
   }
-  return res.status(200).json({message:"success"});
+  return res.status(200).json({message:"success",admin});
 }
