@@ -257,3 +257,40 @@ describe("GET /admin", () => {
     }
   );
 });
+
+describe("DELETE /feedback/:feedbackId", () => {
+  let variables: any = {};
+  beforeAll(async () => {
+    let res = await request(app).post("/auth/login").send({
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+    });
+    variables.token = process.env.BEARERKEY + res.body.token;
+    variables.feedbackId = res.body.feedback._id;
+  });
+
+  it(
+    "", async ()=>{
+      await request(app)
+        .delete(`/feedback/${variables.feedbackId}`)
+        .expect(400);
+    }
+  );
+
+  it.each([
+    [200,variables.feedbackId], 
+    [400, "987654324567890f"],
+    "should return status %i for user: %s, email: %s",
+    async (expected:any,feedbackId:any) => {
+      const response =  await request(app)
+      .delete(`/feedback/${variables.feedbackId}`)
+      .expect(expected);
+      if (expected == 200) {
+        expect(response.body.message).toEqual("success");
+      } else {
+        expect(response.body.message).toEqual("catch error");
+      }
+    }
+ ] );
+});
+
