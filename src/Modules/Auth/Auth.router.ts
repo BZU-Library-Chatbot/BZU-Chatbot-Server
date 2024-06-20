@@ -49,7 +49,7 @@ router.post(
 );
 
 router.get("/admin",auth([roles.Admin]) , validation(validators.admin), asyncHandler(AuthController.getAllAdmins));
-router.patch('/active/:adminId', auth([roles.Admin]), validation(validators.active), asyncHandler(AuthController.active));
-router.patch('/deActive/:adminId', auth([roles.Admin]), validation(validators.deActive), asyncHandler(AuthController.deActive))
+router.patch('/activate/:adminId', auth([roles.Admin]), validation(validators.activate), asyncHandler(AuthController.activate));
+router.patch('/deActivate/:adminId', auth([roles.Admin]), validation(validators.deActivate), asyncHandler(AuthController.deActivate))
 
 export default router;

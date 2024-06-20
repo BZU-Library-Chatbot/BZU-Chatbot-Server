@@ -739,7 +739,7 @@ export const getAllAdmins = async (req: any, res: any, next: any) => {
   });
 };
 
-export const active = async (req: any, res: any, next: any) => {
+export const activate = async (req: any, res: any, next: any) => {
   const {adminId} = req.params;
   const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Active'});
   if(!admin){
@@ -751,7 +751,7 @@ export const active = async (req: any, res: any, next: any) => {
   return res.status(200).json({message:"success"});
 }
 
-export const deActive = async (req: any, res: any, next: any) => {
+export const deActivate = async (req: any, res: any, next: any) => {
   const {adminId} = req.params;
   const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Not Active'});
   if(!admin){
