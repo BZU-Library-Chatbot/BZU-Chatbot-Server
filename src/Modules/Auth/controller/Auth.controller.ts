@@ -744,7 +744,7 @@ export const active = async (req: any, res: any, next: any) => {
   const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Active'});
   if(!admin){
     const error = new Error("No such admin") as any;
-    error.cause = 404;
+    error.cause = 400;
 
     return next(error);
   }  
@@ -756,7 +756,7 @@ export const deActive = async (req: any, res: any, next: any) => {
   const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Not Active'});
   if(!admin){
     const error = new Error("No such admin") as any;
-    error.cause = 404;
+    error.cause = 400;
 
     return next(error);
   }

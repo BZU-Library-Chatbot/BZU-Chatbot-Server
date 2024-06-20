@@ -56,12 +56,12 @@ export const admin = joi
   })
   .required();
 
-  export const activeAdmin = joi.object({
+  export const active = joi.object({
     adminId:generalFields.id.required(),
   })
   .required();
 
-  export const deActiveAdmin = joi.object({
+  export const deActive = joi.object({
     adminId:generalFields.id.required(),
   })
   .required();
