@@ -4,7 +4,7 @@ import { asyncHandler } from "../../Services/errorHandling";
 import validation from "../../Middleware/validation";
 import * as validators from "./Auth.validation";
 import { auth, roles } from "../../Middleware/auth.middleware";
-const router = Router({ caseSensitive: true });
+const router = Router();
 
 router.post(
   "/signup",
@@ -48,8 +48,20 @@ router.post(
   asyncHandler(AuthController.refreshToken)
 );
 
-router.patch('/activate/:adminId', auth([roles.Admin]), validation(validators.activate), asyncHandler(AuthController.activate));
-router.patch('/deActivate/:adminId', auth([roles.Admin]), validation(validators.deActivate), asyncHandler(AuthController.deActivate))
+router.patch(
+  "/activate/:adminId",
+  auth([roles.Admin]),
+  validation(validators.activate),
+  asyncHandler(AuthController.activate)
+);
+
+router.patch(
+  "/deactivate/:adminId",
+  auth([roles.Admin]),
+  validation(validators.deActivate),
+  asyncHandler(AuthController.deActivate)
+);
+
 router.get(
   "/admin",
   auth([roles.Admin]),
