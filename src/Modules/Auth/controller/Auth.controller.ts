@@ -744,8 +744,8 @@ export const createAdmin = async (req: any, res: any, next: any) => {
 
 export const getAllAdmins = async (req: any, res: any, next: any) => {
   const { page, limit, active } = req.query;
-  const query: any = {_id: { $ne: req.user._id }, role: "Admin"};
-  if (active) query.status = active;
+  const query: any = { _id: { $ne: req.user._id }, role: "Admin" };
+  if (active && active != "any") query.status = active;
   const admins = await userModel
     .find(query)
     .limit(limit)
@@ -753,7 +753,7 @@ export const getAllAdmins = async (req: any, res: any, next: any) => {
   const totalAdmins = await userModel.countDocuments(query);
   const totalPages = Math.ceil(totalAdmins / limit);
   // make the code, password = null
-  admins.forEach((admin: any) => {  
+  admins.forEach((admin: any) => {
     admin.password = null;
     admin.forgetCode = null;
   });
@@ -767,25 +767,31 @@ export const getAllAdmins = async (req: any, res: any, next: any) => {
 };
 
 export const activate = async (req: any, res: any, next: any) => {
-  const {adminId} = req.params;
-  const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Active'});
-  if(!admin){
-    const error = new Error("No such admin") as any;
-    error.cause = 400;
-
-    return next(error);
-  }  
-  return res.status(200).json({message:"success",admin});
-}
-
-export const deActivate = async (req: any, res: any, next: any) => {
-  const {adminId} = req.params;
-  const admin = await userModel.findOneAndUpdate({_id:adminId, role:'Admin'}, {status:'Not Active'});
-  if(!admin){
+  const { adminId } = req.params;
+  const admin = await userModel.findOneAndUpdate(
+    { _id: adminId, role: "Admin" },
+    { status: "Active" }
+  );
+  if (!admin) {
     const error = new Error("No such admin") as any;
     error.cause = 400;
 
     return next(error);
   }
-  return res.status(200).json({message:"success",admin});
-}
+  return res.status(200).json({ message: "success", admin });
+};
+
+export const deActivate = async (req: any, res: any, next: any) => {
+  const { adminId } = req.params;
+  const admin = await userModel.findOneAndUpdate(
+    { _id: adminId, role: "Admin" },
+    { status: "Not Active" }
+  );
+  if (!admin) {
+    const error = new Error("No such admin") as any;
+    error.cause = 400;
+
+    return next(error);
+  }
+  return res.status(200).json({ message: "success", admin });
+};

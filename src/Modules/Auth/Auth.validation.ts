@@ -52,22 +52,23 @@ export const getAllAdmins = joi
   .object({
     page: joi.number().min(1).default(1),
     limit: joi.number().min(1).default(10),
-    active: joi.boolean(),
+    active: joi.string().valid("Active", "Not Active", "any"),
   })
   .required();
 
-  export const activate = joi.object({
-    adminId:generalFields.id.required(),
+export const activate = joi
+  .object({
+    adminId: generalFields.id.required(),
   })
   .required();
 
-  export const deActivate = joi.object({
-    adminId:generalFields.id.required(),
+export const deActivate = joi
+  .object({
+    adminId: generalFields.id.required(),
   })
   .required();
 
-
-  export const createAdmin = joi
+export const createAdmin = joi
   .object({
     userName: joi.string().min(3).max(40).required(),
     email: generalFields.email.required(),
