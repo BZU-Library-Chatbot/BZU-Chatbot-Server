@@ -15,3 +15,9 @@ export const getAllFeedbacks = joi
     limit: joi.number().min(1).default(10),
   })
   .required();
+
+export const deleteFeedback = joi
+  .object({
+    feedbackId: generalFields.id.required(),
+  })
+  .required();
