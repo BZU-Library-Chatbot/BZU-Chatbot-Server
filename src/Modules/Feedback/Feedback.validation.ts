@@ -8,3 +8,7 @@ export const createFeedback = joi
     interactionId: generalFields.id.required(),
   })  .required();
   
+  export const deleteFeedback = joi
+  .object({
+    feedbackId: generalFields.id.required(),
+  })  .required();
