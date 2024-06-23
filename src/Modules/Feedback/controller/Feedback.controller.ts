@@ -34,7 +34,7 @@ export const deleteFeedback = async (req: any, res: any, next: any) => {
 
   if (!feedback) {
     const error = new Error("Feedback not found") as any;
-    error.cause = 404;
+    error.cause = 400;
     return next(error);
   }
 
