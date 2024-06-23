@@ -12,7 +12,7 @@ export const createFeedback = joi
 export const getAllFeedbacks = joi
   .object({
     page: joi.number().min(1).default(1),
-    limit: joi.number().min(1).default(10),
+    size: joi.number().min(1).default(10),
   })
   .required();
 
