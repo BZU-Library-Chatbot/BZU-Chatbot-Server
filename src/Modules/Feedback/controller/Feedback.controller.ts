@@ -26,14 +26,23 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 };
 
 export const getAllFeedbacks = async (req: any, res: any, next: any) => {
-  const { page, limit } = req.query;
+  const { page = 1, size = 10 } = req.query;
   const feedbacks = await feedbackModel
     .find()
-    .skip((page - 1) * limit)
-    .limit(limit)
+    .skip((page - 1) * size)
+    .limit(size)
     .sort({ createdAt: -1 });
 
-  return res.status(200).json({ message: "success", feedbacks });
+  // return the total number of feedbacks, current page, and the feedbacks
+  const totalFeedbacks = await feedbackModel.countDocuments();
+  const totalPages = Math.ceil(totalFeedbacks / size);
+  return res.status(200).json({
+    message: "success",
+    feedbacks,
+    totalFeedbacks,
+    currentPage: Number(page),
+    totalPages,
+  });
 };
 
 export const deleteFeedback = async (req: any, res: any, next: any) => {
