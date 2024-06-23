@@ -6,7 +6,7 @@ dotenv.config();
 
 afterAll(async () => {
     app.close(() => {
-      console.log("Auth Tests Completed");
+      console.log("Feedback Tests Completed");
     });
     await new Promise<void>((resolve) => setTimeout(() => resolve(), 500));
   });
