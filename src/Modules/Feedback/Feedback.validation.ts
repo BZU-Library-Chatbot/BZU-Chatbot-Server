@@ -6,5 +6,12 @@ export const createFeedback = joi
     text: joi.string().min(2).max(100),
     rating: joi.number().min(1).max(5).required(),
     interactionId: generalFields.id.required(),
-  })  .required();
-  
+  })
+  .required();
+
+export const getAllFeedbacks = joi
+  .object({
+    page: joi.number().min(1).default(1),
+    limit: joi.number().min(1).default(10),
+  })
+  .required();

@@ -7,7 +7,7 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 
   const interaction = await interactionModel.findOne({
     _id: interactionId,
-    userId:req.user._id,
+    userId: req.user._id,
   });
 
   if (!interaction) {
@@ -23,4 +23,15 @@ export const createFeedback = async (req: any, res: any, next: any) => {
   });
 
   return res.status(201).json({ message: "success", feedback });
+};
+
+export const getAllFeedbacks = async (req: any, res: any, next: any) => {
+  const { page, limit } = req.query;
+  const feedbacks = await feedbackModel
+    .find()
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  return res.status(200).json({ message: "success", feedbacks });
 };
