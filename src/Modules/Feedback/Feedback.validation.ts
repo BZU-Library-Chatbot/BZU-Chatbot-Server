@@ -6,9 +6,18 @@ export const createFeedback = joi
     text: joi.string().min(2).max(100),
     rating: joi.number().min(1).max(5).required(),
     interactionId: generalFields.id.required(),
-  })  .required();
-  
-  export const deleteFeedback = joi
+  })
+  .required();
+
+export const getAllFeedbacks = joi
+  .object({
+    page: joi.number().min(1).default(1),
+    size: joi.number().min(1).default(10),
+  })
+  .required();
+
+export const deleteFeedback = joi
   .object({
     feedbackId: generalFields.id.required(),
-  })  .required();
+  })
+  .required();

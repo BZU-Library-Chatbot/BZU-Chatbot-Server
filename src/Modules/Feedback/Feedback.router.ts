@@ -13,6 +13,13 @@ router.post(
   asyncHandler(feedbackController.createFeedback)
 );
 
+router.get(
+  "/",
+  auth([roles.Admin]),
+  validation(validators.getAllFeedbacks),
+  asyncHandler(feedbackController.getAllFeedbacks)
+);
+
 router.delete(
   "/:feedbackId",
   auth([roles.Admin]),

@@ -7,7 +7,7 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 
   const interaction = await interactionModel.findOne({
     _id: interactionId,
-    userId:req.user._id,
+    userId: req.user._id,
   });
 
   if (!interaction) {
@@ -23,6 +23,26 @@ export const createFeedback = async (req: any, res: any, next: any) => {
   });
 
   return res.status(201).json({ message: "success", feedback });
+};
+
+export const getAllFeedbacks = async (req: any, res: any, next: any) => {
+  const { page = 1, size = 10 } = req.query;
+  const feedbacks = await feedbackModel
+    .find()
+    .skip((page - 1) * size)
+    .limit(size)
+    .sort({ createdAt: -1 });
+
+  // return the total number of feedbacks, current page, and the feedbacks
+  const totalFeedbacks = await feedbackModel.countDocuments();
+  const totalPages = Math.ceil(totalFeedbacks / size);
+  return res.status(200).json({
+    message: "success",
+    feedbacks,
+    totalFeedbacks,
+    currentPage: Number(page),
+    totalPages,
+  });
 };
 
 export const deleteFeedback = async (req: any, res: any, next: any) => {
