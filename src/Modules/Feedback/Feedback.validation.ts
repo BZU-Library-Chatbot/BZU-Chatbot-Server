@@ -13,6 +13,7 @@ export const getAllFeedbacks = joi
   .object({
     page: joi.number().min(1).default(1),
     size: joi.number().min(1).default(10),
+    sort: joi.string(),
   })
   .required();
 
