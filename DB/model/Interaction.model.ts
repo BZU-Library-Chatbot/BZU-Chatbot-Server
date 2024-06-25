@@ -34,6 +34,13 @@ interactionSchema.virtual("session", {
   justOne: true,
 });
 
+interactionSchema.virtual("user", {
+  ref: "User",
+  localField: "userId",
+  foreignField: "_id",
+  justOne: true,
+});
+
 const interactionModel =
   mongoose.models.Interaction || model("Interaction", interactionSchema);
 export default interactionModel;

@@ -31,7 +31,14 @@ export const getAllFeedbacks = async (req: any, res: any, next: any) => {
     .find()
     .skip((page - 1) * size)
     .limit(size)
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "interactionId",
+      populate: {
+        path: "userId",
+        model: "User",
+      },
+    });
 
   // return the total number of feedbacks, current page, and the feedbacks
   const totalFeedbacks = await feedbackModel.countDocuments();
