@@ -1,5 +1,6 @@
 import feedbackModel from "../../../../DB/model/Feedback.model";
 import interactionModel from "../../../../DB/model/Interaction.model";
+import { SortOrder } from "mongoose";
 
 export const createFeedback = async (req: any, res: any, next: any) => {
   const { interactionId } = req.params;
@@ -26,12 +27,25 @@ export const createFeedback = async (req: any, res: any, next: any) => {
 };
 
 export const getAllFeedbacks = async (req: any, res: any, next: any) => {
-  const { page = 1, size = 10 } = req.query;
+  const { page = 1, size = 10, sort = "createdAt,desc" } = req.query;
+  const sortParams = (sort as string).split(",");
+  const sortField = sortParams[0];
+  const sortOrder: SortOrder = sortParams[1] === "desc" ? -1 : 1;
+  const sortObj: { [key: string]: SortOrder } = {};
+  sortObj[sortField] = sortOrder;
+
   const feedbacks = await feedbackModel
     .find()
     .skip((page - 1) * size)
     .limit(size)
-    .sort({ createdAt: -1 });
+    .sort(sortObj)
+    .populate({
+      path: "interactionId",
+      populate: {
+        path: "userId",
+        model: "User",
+      },
+    });
 
   // return the total number of feedbacks, current page, and the feedbacks
   const totalFeedbacks = await feedbackModel.countDocuments();
