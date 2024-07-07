@@ -84,9 +84,17 @@ export const getFeedbackById = async (req: any, res: any, next: any) => {
       populate: {
         path: "userId",
         model: "User",
+        select: '-password -forgetCode',
       },
-    });
-  //const userId = feedback.interactionId.userId._id;
+
+    }).populate({
+      path: "text",
+      populate: {
+        path: "interactionId",
+        model: "Interaction",
+      },
+
+    })
   return res.status(200).json({
     message: "success",
     feedback,
