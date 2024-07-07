@@ -26,4 +26,11 @@ router.delete(
   validation(validators.deleteFeedback),
   asyncHandler(feedbackController.deleteFeedback)
 );
+
+router.get(
+  "/:feedbackId",
+  auth([roles.Admin]),
+  validation(validators.getFeedbackById),
+  asyncHandler(feedbackController.getFeedbackById)
+);
 export default router;

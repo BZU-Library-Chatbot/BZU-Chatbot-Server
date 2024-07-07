@@ -22,3 +22,9 @@ export const deleteFeedback = joi
     feedbackId: generalFields.id.required(),
   })
   .required();
+
+  export const getFeedbackById = joi
+  .object({
+    feedbackId: generalFields.id.required(),
+  })
+  .required();

@@ -74,3 +74,31 @@ export const deleteFeedback = async (req: any, res: any, next: any) => {
 
   return res.status(200).json({ message: "Feedback deleted successfully" });
 };
+
+export const getFeedbackById = async (req: any, res: any, next: any) => {
+  const { feedbackId } = req.params;
+  const feedback = await feedbackModel
+    .findById(feedbackId)
+    .populate({
+      path: "interactionId",
+      populate: {
+        path: "userId",
+        model: "User",
+        select: '-password -forgetCode',
+      },
+
+    }).populate({
+      path: "text",
+      populate: {
+        path: "interactionId",
+        model: "Interaction",
+      },
+
+    })
+  return res.status(200).json({
+    message: "success",
+    feedback,
+    
+  });
+
+}
