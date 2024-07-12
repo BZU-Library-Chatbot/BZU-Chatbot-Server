@@ -6,7 +6,7 @@ export const sendMessage = async (req: any, res: any, next: any) => {
   const { message, sessionId } = req.body;
   const userId = req.user?._id;
 
-  let title = "This is a dummy session title for now.";
+  let title = "Title";
 
   const response: any = await axios.post(
     `${process.env.CHATBOT_URL}/webhooks/rest/webhook`,
